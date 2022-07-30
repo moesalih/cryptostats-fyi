@@ -3,11 +3,10 @@ import { Link } from "react-router-dom";
 import { Container, Navbar, Nav, NavDropdown, Dropdown, NavItem, NavLink, Spinner, Button, Popover, OverlayTrigger, Form } from 'react-bootstrap';
 
 const axios = require('axios').default;
+const moment = require('moment')
 
-const unique = (value, index, self) => {
-	return self.indexOf(value) === index
-}
 
+const unique = (value, index, self) => { return self.indexOf(value) === index }
 
 
 
@@ -17,6 +16,19 @@ export default function Home() {
 	const [categoryFilter, setCategoryFilter] = useState([]);
 	const [chainFilter, setChainFilter] = useState([]);
 
+	async function fetchData() {
+		const dateString = moment().subtract(1, 'days').format('YYYY-MM-DD')
+		console.log(dateString);
+
+		let { data } = await axios.get('https://api.cryptostats.community/api/v1/fees/oneDayTotalFees/'+dateString+'?metadata=true')
+		data.data = data.data.filter(protocol => protocol.results.oneDayTotalFees !== null);
+		data.data = data.data.sort((a, b) => b.results.oneDayTotalFees - a.results.oneDayTotalFees);
+		data.data.forEach(protocol => protocol.metadata.blockchain = protocol.metadata.blockchain || protocol.metadata.name);
+
+		console.log(data.data);
+		setProtocols(data.data);
+
+	}
 
 	let getIconForNetwork = function (network) {
 		let protocol = protocols.find(protocol => protocol.metadata.name === network)
@@ -45,40 +57,9 @@ export default function Home() {
 
 
 	useEffect(() => {
-		async function fetchData() {
-			let { data } = await axios.get('https://api.cryptostats.community/api/v1/fees/oneDayTotalFees/2022-07-28?metadata=true')
-			data.data = data.data.filter(protocol => protocol.results.oneDayTotalFees !== null);
-			data.data = data.data.sort((a, b) => b.results.oneDayTotalFees - a.results.oneDayTotalFees);
-			data.data.forEach(protocol => protocol.metadata.blockchain = protocol.metadata.blockchain || protocol.metadata.name);
-
-			console.log(data.data);
-			setProtocols(data.data);
-
-		}
 		fetchData()
 	}, [])
 
-	function filterIcon(title, listFunc, filterItems, toggleFunc, itemDisplayFunc) {
-		return (
-			<OverlayTrigger
-				trigger="click"
-				placement="bottom"
-				rootClose={true}
-				overlay={
-					<Popover className="shadow">
-						<Popover.Body>
-							<div className="h6 mb-3">{title}</div>
-							{listFunc().map(item =>
-								<Form.Check type="checkbox" label={itemDisplayFunc ? itemDisplayFunc(item) : item} key={item} checked={filterItems.includes(item)} onChange={(e) => toggleFunc(item, e.target.checked)} />
-							)}
-						</Popover.Body>
-					</Popover>
-				}
-			>
-				<i className={"bi bi-funnel-fill small ms-1 "+(filterItems.length>0?'text-primary':'opacity-25')}></i>
-			</OverlayTrigger>
-		)
-	}
 
 	return (
 		<>
@@ -93,8 +74,8 @@ export default function Home() {
 						<tr className='fw-normal small'>
 							<th ></th>
 							<th ></th>
-							<th className="text-center"><span className='opacity-50'>Chain</span> {filterIcon('Chain', getChains, chainFilter, toggleChainFilter)}</th>
-							<th ><span className='opacity-50'>Category</span> {filterIcon('Category', getCategories, categoryFilter, toggleCategoryFilter, item => item.toUpperCase())}</th>
+							<th className="text-center"><span className='opacity-50'>Chain</span> {filterIcon('Chain', getChains, chainFilter, toggleChainFilter, setChainFilter)}</th>
+							<th ><span className='opacity-50'>Category</span> {filterIcon('Category', getCategories, categoryFilter, toggleCategoryFilter, setCategoryFilter, item => item.toUpperCase())}</th>
 							<th ></th>
 							<th className="text-end opacity-50">1 Day Fees</th>
 						</tr>
@@ -121,12 +102,38 @@ export default function Home() {
 	);
 }
 
+function filterIcon(title, listFunc, filterItems, toggleFunc, setFilterItemsFunc, itemDisplayFunc) {
+	function resetFilterItems() {
+		setFilterItemsFunc([])
+	}
+	return (
+		<OverlayTrigger
+			trigger="click"
+			placement="bottom"
+			rootClose={true}
+			overlay={
+				<Popover className="shadow">
+					<Popover.Body>
+						{filterItems.length>0 ? <span role="button" className='float-end small text-primary py-1' onClick={resetFilterItems}>RESET</span> : ''}
+						<div className="h6 mb-3">{title}</div>
+						{listFunc().map(item =>
+							<Form.Check type="checkbox" label={itemDisplayFunc ? itemDisplayFunc(item) : item} key={item} checked={filterItems.includes(item)} onChange={(e) => toggleFunc(item, e.target.checked)} />
+						)}
+					</Popover.Body>
+				</Popover>
+			}
+		>
+			<i className={"bi bi-funnel-fill small ms-1 "+(filterItems.length>0?'text-primary':'opacity-25')}></i>
+		</OverlayTrigger>
+	)
+}
+
 function Icon(props) {
-	return props.src ? (
+	return (
 		<img className="align-text-top me-2" style={{ height: '1.3em', width: '1.3em', objectFit: 'contain' }} {...props} />
-	) : "";
+	)
 }
 
 function currency(number) {
-	return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(number);
+	return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(number)
 }
