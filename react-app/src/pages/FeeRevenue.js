@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
-import { Container, Navbar, Nav, NavDropdown, Dropdown, NavItem, NavLink, Spinner, Button, Popover, OverlayTrigger, Form } from 'react-bootstrap';
+import { Container, Navbar, Nav, NavDropdown, Dropdown, NavItem, NavLink, Spinner, Button, Popover, OverlayTrigger, Form, Table } from 'react-bootstrap';
+
+import Helpers from '../Helpers';
+
 
 const axios = require('axios').default;
 const moment = require('moment')
 
 
-const unique = (value, index, self) => { return self.indexOf(value) === index }
 
 
 
-export default function Home() {
+
+export default function() {
 
 	const [protocols, setProtocols] = useState([]);
 	const [categoryFilter, setCategoryFilter] = useState([]);
@@ -18,12 +21,11 @@ export default function Home() {
 
 	async function fetchData() {
 		const dateString = moment().subtract(1, 'days').format('YYYY-MM-DD')
-		console.log(dateString);
 
-		let { data } = await axios.get('https://api.cryptostats.community/api/v1/fees/oneDayTotalFees/'+dateString+'?metadata=true')
+		let { data } = await axios.get(Helpers.cryptostatsURL('fees', ['oneDayTotalFees'], [dateString], true))
 		data.data = data.data.filter(protocol => protocol.results.oneDayTotalFees !== null);
 		data.data = data.data.sort((a, b) => b.results.oneDayTotalFees - a.results.oneDayTotalFees);
-		data.data.forEach(protocol => protocol.metadata.blockchain = protocol.metadata.blockchain || protocol.metadata.name);
+		data.data.forEach(protocol => protocol.metadata.blockchain = protocol.metadata.blockchain || 'Other');
 
 		console.log(data.data);
 		setProtocols(data.data);
@@ -35,10 +37,10 @@ export default function Home() {
 		return protocol ? protocol.metadata.icon : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
 	}
 	let getCategories = function () {
-		return protocols.map(protocol => protocol.metadata.category).filter(unique)
+		return protocols.map(protocol => protocol.metadata.category).filter(Helpers.unique)
 	}
 	let getChains = function () {
-		return protocols.map(protocol => protocol.metadata.blockchain).filter(unique)
+		return protocols.map(protocol => protocol.metadata.blockchain).filter(Helpers.unique)
 	}
 
 	let toggleCategoryFilter = function (category, status) {
@@ -63,18 +65,18 @@ export default function Home() {
 
 	return (
 		<>
-
-			<div className="h2 my-4 "><span className='fw-800 '>CryptoStats.FYI</span> <span className='fw-light ms-4'>Fee Revenue</span></div>
+			<div className="h2 fw-light">Fee Revenue</div>
+			<div className='opacity-50'>Total fees paid to a protocol on a given day.</div>
 
 			{protocols.length == 0 && <div className='text-center'><Spinner animation="border" variant="secondary" className="my-5" /></div>}
 
 			{protocols && protocols.length > 0 &&
-				<table className="table my-5">
+				<Table responsive className=" my-5">
 					<thead>
 						<tr className='fw-normal small'>
 							<th ></th>
 							<th ></th>
-							<th className="text-center"><span className='opacity-50'>Chain</span> {filterIcon('Chain', getChains, chainFilter, toggleChainFilter, setChainFilter)}</th>
+							<th className="text-center text-nowrap"><span className='opacity-50'>Chain</span> {filterIcon('Chain', getChains, chainFilter, toggleChainFilter, setChainFilter)}</th>
 							<th ><span className='opacity-50'>Category</span> {filterIcon('Category', getCategories, categoryFilter, toggleCategoryFilter, setCategoryFilter, item => item.toUpperCase())}</th>
 							<th ></th>
 							<th className="text-end opacity-50">1 Day Fees</th>
@@ -84,18 +86,18 @@ export default function Home() {
 						{getFilteredProtocols() && getFilteredProtocols().map((protocol, index) => {
 							return (
 								<tr key={index}>
-									<td className="text-center" ><Icon src={protocol.metadata.icon} /></td>
-									<td ><span className='fw-semibold'>{protocol.metadata.name}</span> <span className='opacity-50'>{protocol.metadata.subtitle}</span></td>
-									<td className="text-center" ><Icon src={getIconForNetwork(protocol.metadata.blockchain)} title={protocol.metadata.blockchain} /></td>
+									<td className="text-center" ><Helpers.Icon src={protocol.metadata.icon} /></td>
+									<td ><span className='fw-500'>{protocol.metadata.name}</span> <span className='opacity-50'>{protocol.metadata.subtitle}</span></td>
+									<td className="text-center" ><Helpers.Icon src={getIconForNetwork(protocol.metadata.blockchain)} title={protocol.metadata.blockchain} className="smaller" /></td>
 									<td ><span className='text-uppercase small '>{protocol.metadata.category}</span></td>
 									<td ></td>
-									<td className="text-end"><span className="font-monospace">{currency(protocol.results.oneDayTotalFees)}</span></td>
+									<td className="text-end"><span className="font-monospace">{Helpers.currency(protocol.results.oneDayTotalFees)}</span></td>
 								</tr>
 							)
 						})}
 
 					</tbody>
-				</table>
+				</Table>
 			}
 
 		</>
@@ -114,7 +116,7 @@ function filterIcon(title, listFunc, filterItems, toggleFunc, setFilterItemsFunc
 			overlay={
 				<Popover className="shadow">
 					<Popover.Body>
-						{filterItems.length>0 ? <span role="button" className='float-end small text-primary py-1' onClick={resetFilterItems}>RESET</span> : ''}
+						{filterItems.length>0 ? <span role="button" className='float-end small text-primary' onClick={resetFilterItems}>RESET</span> : ''}
 						<div className="h6 mb-3">{title}</div>
 						{listFunc().map(item =>
 							<Form.Check type="checkbox" label={itemDisplayFunc ? itemDisplayFunc(item) : item} key={item} checked={filterItems.includes(item)} onChange={(e) => toggleFunc(item, e.target.checked)} />
@@ -128,12 +130,3 @@ function filterIcon(title, listFunc, filterItems, toggleFunc, setFilterItemsFunc
 	)
 }
 
-function Icon(props) {
-	return (
-		<img className="align-text-top me-2" style={{ height: '1.3em', width: '1.3em', objectFit: 'contain' }} {...props} />
-	)
-}
-
-function currency(number) {
-	return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(number)
-}
