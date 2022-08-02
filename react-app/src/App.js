@@ -14,7 +14,7 @@ function App() {
 				<div className="col-md-3">
 
 					<Navbar collapseOnSelect expand="none" className="my-md-3">
-						<div className="fw-bold h2 my-0">CryptoStats.FYI</div>
+						<div className="fw-bold h2 my-0">CryptoStats<span className="smaller">.FYI</span></div>
 						<Navbar.Toggle className="d-md-none border-0" />
 						<Navbar.Collapse id="basic-navbar-nav " className="d-md-block">
 							<Nav className="me-auto py-5 fw-500">

@@ -29,26 +29,15 @@ export default function() {
 
 		console.log(data.data);
 		setProtocols(data.data);
-
 	}
 
 	let getIconForNetwork = function (network) {
 		let protocol = protocols.find(protocol => protocol.metadata.name === network)
 		return protocol ? protocol.metadata.icon : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
 	}
-	let getCategories = function () {
-		return protocols.map(protocol => protocol.metadata.category).filter(Helpers.unique)
-	}
-	let getChains = function () {
-		return protocols.map(protocol => protocol.metadata.blockchain).filter(Helpers.unique)
-	}
+	let getCategories = function () { return protocols.map(protocol => protocol.metadata.category).filter(Helpers.unique) }
+	let getChains = function () { return protocols.map(protocol => protocol.metadata.blockchain).filter(Helpers.unique) }
 
-	let toggleCategoryFilter = function (category, status) {
-		setCategoryFilter(status ? categoryFilter.concat(category) : categoryFilter.filter(c => c !== category))
-	}
-	let toggleChainFilter = function (chain, status) {
-		setChainFilter(status ? chainFilter.concat(chain) : chainFilter.filter(c => c !== chain))
-	}
 
 	let getFilteredProtocols = function () {
 		let items = protocols
@@ -74,10 +63,10 @@ export default function() {
 				<Table responsive className=" my-5">
 					<thead>
 						<tr className='fw-normal small'>
+							<th style={{width: '2em'}}></th>
 							<th ></th>
-							<th ></th>
-							<th className="text-center text-nowrap"><span className='opacity-50'>Chain</span> {filterIcon('Chain', getChains, chainFilter, toggleChainFilter, setChainFilter)}</th>
-							<th ><span className='opacity-50'>Category</span> {filterIcon('Category', getCategories, categoryFilter, toggleCategoryFilter, setCategoryFilter, item => item.toUpperCase())}</th>
+							<th className="text-center text-nowrap"><span className='opacity-50'>Chain</span> {Helpers.filterIcon('Chain', getChains, chainFilter, setChainFilter)}</th>
+							<th ><span className='opacity-50'>Category</span> {Helpers.filterIcon('Category', getCategories, categoryFilter, setCategoryFilter, item => item.toUpperCase())}</th>
 							<th ></th>
 							<th className="text-end opacity-50">1 Day Fees</th>
 						</tr>
@@ -104,29 +93,4 @@ export default function() {
 	);
 }
 
-function filterIcon(title, listFunc, filterItems, toggleFunc, setFilterItemsFunc, itemDisplayFunc) {
-	function resetFilterItems() {
-		setFilterItemsFunc([])
-	}
-	return (
-		<OverlayTrigger
-			trigger="click"
-			placement="bottom"
-			rootClose={true}
-			overlay={
-				<Popover className="shadow">
-					<Popover.Body>
-						{filterItems.length>0 ? <span role="button" className='float-end small text-primary' onClick={resetFilterItems}>RESET</span> : ''}
-						<div className="h6 mb-3">{title}</div>
-						{listFunc().map(item =>
-							<Form.Check type="checkbox" label={itemDisplayFunc ? itemDisplayFunc(item) : item} key={item} checked={filterItems.includes(item)} onChange={(e) => toggleFunc(item, e.target.checked)} />
-						)}
-					</Popover.Body>
-				</Popover>
-			}
-		>
-			<i className={"bi bi-funnel-fill small ms-1 "+(filterItems.length>0?'text-primary':'opacity-25')}></i>
-		</OverlayTrigger>
-	)
-}
 
