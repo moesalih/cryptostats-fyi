@@ -16,14 +16,14 @@ export default function() {
 
 	async function fetchData() {
 		let { data } = await axios.get(Helpers.cryptostatsURL('l2-fees', ['feeTransferEth', 'feeSwap'], [], true))
-		data.data = data.data.filter(protocol => protocol.results.feeTransferEth !== null);
-		data.data = data.data.sort((a, b) => a.results.feeTransferEth - b.results.feeTransferEth);
-		// data.data.forEach(protocol => protocol.metadata.blockchain = protocol.metadata.blockchain || protocol.metadata.name);
+		let protocols = data.data
+		protocols = protocols.filter(protocol => protocol.results.feeTransferEth !== null);
+		protocols = protocols.sort((a, b) => a.results.feeTransferEth - b.results.feeTransferEth);
 
 		let { data:ethData } = await axios.get(Helpers.cryptostatsURL('l1-fees', ['feeTransferEth', 'feeSwap'], [], true))
 
-		console.log(data.data, ethData.data);
-		let protocols = [...data.data, ...ethData.data]
+		protocols = [...protocols, ...ethData.data]
+		console.log(protocols);
 		setProtocols(protocols);
 	}
 
@@ -64,12 +64,17 @@ export default function() {
 							return (
 								<tr key={index}>
 									<td className="text-center" ><Helpers.Icon src={protocol.metadata.icon} /></td>
-									<td ><span className='fw-500'>{protocol.metadata.name}</span> <span className='opacity-50'>{protocol.metadata.subtitle}</span></td>
+									<td >
+										<span className='fw-500'>{protocol.metadata.name}</span> 
+										<span className='opacity-50'>{protocol.metadata.subtitle}</span> 
+										{protocol.metadata.flags && protocol.metadata.flags.warning ? <i className='bi bi-exclamation-triangle opacity-50 ms-2' title={protocol.metadata.flags.warning}></i> : ''}
+										{protocol.metadata.flags && protocol.metadata.flags.throtle ? <i className='bi bi-speedometer2 opacity-50 ms-2' title={protocol.metadata.flags.throtle}></i> : ''}
+									</td>
 									{/* <td className="text-center" ><Icon src={getIconForNetwork(protocol.metadata.blockchain)} title={protocol.metadata.blockchain} /></td> */}
 									{/* <td ><span className='text-uppercase small '>{protocol.metadata.category}</span></td> */}
 									<td ></td>
-									<td className="text-end"><span className="font-monospace">{Helpers.currency(protocol.results.feeTransferEth, 2)}</span></td>
-									<td className="text-end"><span className="font-monospace">{protocol.results.feeSwap ? Helpers.currency(protocol.results.feeSwap, 2) : '-'}</span></td>
+									<td className="text-end"><span className="font-monospace" title={protocol.results.feeTransferEth}>{Helpers.currency(protocol.results.feeTransferEth, 2)}</span></td>
+									<td className="text-end"><span className="font-monospace" title={protocol.results.feeSwap}>{protocol.results.feeSwap ? Helpers.currency(protocol.results.feeSwap, 2) : '-'}</span></td>
 								</tr>
 							)
 						})}
