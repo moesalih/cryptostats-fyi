@@ -19,8 +19,8 @@ Helpers.Icon = function(props) {
 	)
 }
 
-Helpers.currency = function(number) {
-	return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(number)
+Helpers.currency = function(number, decimals = 0) {
+	return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: decimals }).format(number)
 }
 Helpers.percent = function(number) {
 	return (number*100).toFixed(2) + '%'

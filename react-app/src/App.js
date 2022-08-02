@@ -4,6 +4,7 @@ import './App.css';
 
 import FeeRevenue from './pages/FeeRevenue';
 import Issuance from './pages/Issuance';
+import TransactionFees from './pages/TransactionFees';
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
 							<Nav className="me-auto py-5 fw-500">
 								<NavLink className="nav-link" to="/fee-revenue">💰&nbsp;&nbsp;Fee Revenue</NavLink>
 								<NavLink className="nav-link" to="/issuance">🖨&nbsp;&nbsp;Issuance</NavLink>
+								<NavLink className="nav-link" to="/transaction-fees">💳&nbsp;&nbsp;Transaction Fees</NavLink>
 							</Nav>
 							<div className="opacity-50 smaller lh-lg">
 								<div>Data from <a href="https://cryptostats.community" target="_blank" className="text-reset">CryptoStats</a></div>
@@ -37,6 +39,7 @@ function App() {
 							<Route path="/" element={<Navigate to="/fee-revenue" />} ></Route>
 							<Route path="/fee-revenue" element={<FeeRevenue />} />
 							<Route path="/issuance" element={<Issuance />} />
+							<Route path="/transaction-fees" element={<TransactionFees />} />
 						</Routes>
 					</main>
 
