@@ -41,19 +41,15 @@ export default function() {
 
 	return (
 		<>
-			<div className="h2 fw-light">Transaction Fees</div>
-			<div className='opacity-50'>The USD transaction fees for basic transactions on Ethereum layer-2s.</div>
+			<Helpers.Header title='Transaction Fees' subtitle='The USD transaction fees for basic transactions on Ethereum layer-2s.' />
 
-			{protocols.length == 0 && <div className='text-center'><Spinner animation="border" variant="secondary" className="my-5" /></div>}
+			{protocols.length == 0 && <Helpers.Loading />}
 
 			{protocols && protocols.length > 0 &&
 				<Table responsive className=" my-5">
 					<thead>
 						<tr className='fw-normal small'>
 							<th style={{width: '2em'}}></th>
-							<th ></th>
-							{/* <th className="text-center text-nowrap"><span className='opacity-50'>Chain</span> {filterIcon('Chain', getChains, chainFilter, setChainFilter)}</th> */}
-							{/* <th ><span className='opacity-50'>Category</span> {filterIcon('Category', getCategories, categoryFilter, setCategoryFilter, item => item.toUpperCase())}</th> */}
 							<th ></th>
 							<th className="text-end opacity-50">Send ETH</th>
 							<th className="text-end opacity-50">Swap Tokens</th>
@@ -70,9 +66,6 @@ export default function() {
 										{protocol.metadata.flags && protocol.metadata.flags.warning ? <i className='bi bi-exclamation-triangle opacity-50 ms-2' title={protocol.metadata.flags.warning}></i> : ''}
 										{protocol.metadata.flags && protocol.metadata.flags.throtle ? <i className='bi bi-speedometer2 opacity-50 ms-2' title={protocol.metadata.flags.throtle}></i> : ''}
 									</td>
-									{/* <td className="text-center" ><Icon src={getIconForNetwork(protocol.metadata.blockchain)} title={protocol.metadata.blockchain} /></td> */}
-									{/* <td ><span className='text-uppercase small '>{protocol.metadata.category}</span></td> */}
-									<td ></td>
 									<td className="text-end"><span className="font-monospace" title={protocol.results.feeTransferEth}>{Helpers.currency(protocol.results.feeTransferEth, 2)}</span></td>
 									<td className="text-end"><span className="font-monospace" title={protocol.results.feeSwap}>{protocol.results.feeSwap ? Helpers.currency(protocol.results.feeSwap, 2) : '-'}</span></td>
 								</tr>

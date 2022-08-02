@@ -38,19 +38,15 @@ export default function() {
 
 	return (
 		<>
-			<div className="h2 fw-light">Issuance</div>
-			<div className='opacity-50'>The amount of tokens issued in the past day, in USD.</div>
+			<Helpers.Header title='Issuance' subtitle='The amount of tokens issued in the past day, in USD.' />
 
-			{protocols.length == 0 && <div className='text-center'><Spinner animation="border" variant="secondary" className="my-5" /></div>}
+			{protocols.length == 0 && <Helpers.Loading />}
 
 			{protocols && protocols.length > 0 &&
 				<Table responsive className=" my-5">
 					<thead>
 						<tr className='fw-normal small'>
 							<th style={{width: '2em'}}></th>
-							<th ></th>
-							{/* <th className="text-center text-nowrap"><span className='opacity-50'>Chain</span> {filterIcon('Chain', getChains, chainFilter, setChainFilter)}</th> */}
-							{/* <th ><span className='opacity-50'>Category</span> {filterIcon('Category', getCategories, categoryFilter, setCategoryFilter, item => item.toUpperCase())}</th> */}
 							<th ></th>
 							<th className="text-end opacity-50">Issuance Rate</th>
 							<th className="text-end opacity-50">Daily Issuance</th>
@@ -62,9 +58,6 @@ export default function() {
 								<tr key={index}>
 									<td className="text-center" ><Helpers.Icon src={protocol.metadata.icon} /></td>
 									<td ><span className='fw-500'>{protocol.metadata.name}</span> <span className='opacity-50'>{protocol.metadata.subtitle}</span></td>
-									{/* <td className="text-center" ><Icon src={getIconForNetwork(protocol.metadata.blockchain)} title={protocol.metadata.blockchain} /></td> */}
-									{/* <td ><span className='text-uppercase small '>{protocol.metadata.category}</span></td> */}
-									<td ></td>
 									<td className="text-end"><span className="font-monospace">{Helpers.percent(protocol.results.issuanceRateCurrent)}</span></td>
 									<td className="text-end"><span className="font-monospace">{Helpers.currency(protocol.results.issuance7DayAvgUSD)}</span></td>
 								</tr>

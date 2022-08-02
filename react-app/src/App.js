@@ -14,11 +14,11 @@ function App() {
 			<div className="row">
 				<div className="col-lg-3">
 
-					<Navbar collapseOnSelect expand="none" className="my-lg-3">
+					<Navbar collapseOnSelect expand="none" className="py-2 py-lg-4 sticky-lg-top">
 						<div className="fw-bold h2 my-0">CryptoStats<span className="smaller">.FYI</span></div>
 						<Navbar.Toggle className="d-lg-none border-0" />
 						<Navbar.Collapse id="basic-navbar-nav " className="d-lg-block">
-							<Nav className="me-auto py-5 fw-500">
+							<Nav className="me-auto py-3 py-lg-5 fw-500">
 								<NavLink className="nav-link" to="/fee-revenue">💰&nbsp;&nbsp;Fee Revenue</NavLink>
 								<NavLink className="nav-link" to="/issuance">🖨&nbsp;&nbsp;Issuance</NavLink>
 								<NavLink className="nav-link" to="/transaction-fees">💳&nbsp;&nbsp;Transaction Fees</NavLink>

@@ -13,21 +13,21 @@ Helpers.cryptostatsURL = (collection, queries, args, metadata) => {
 }
 
 
-Helpers.Icon = function(props) {
+Helpers.Icon = function (props) {
 	return (
 		<img className="align-text-top" style={{ height: '1.3em', width: '1.3em', objectFit: 'contain' }} {...props} />
 	)
 }
 
-Helpers.currency = function(number, decimals = 0) {
+Helpers.currency = function (number, decimals = 0) {
 	return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: decimals }).format(number)
 }
-Helpers.percent = function(number) {
-	return (number*100).toFixed(2) + '%'
+Helpers.percent = function (number) {
+	return (number * 100).toFixed(2) + '%'
 }
 
 
-Helpers.filterIcon = function(title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc) {
+Helpers.filterIcon = function (title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc) {
 	function resetFilterItems() { setFilterItemsFunc([]) }
 	let toggleFilterItem = function (item, status) {
 		setFilterItemsFunc(status ? filterItems.concat(item) : filterItems.filter(c => c !== item))
@@ -41,7 +41,7 @@ Helpers.filterIcon = function(title, listFunc, filterItems, setFilterItemsFunc, 
 			overlay={
 				<Popover className="shadow">
 					<Popover.Body>
-						{filterItems.length>0 ? <span role="button" className='float-end small text-primary' onClick={resetFilterItems}>RESET</span> : ''}
+						{filterItems.length > 0 ? <span role="button" className='float-end small text-primary' onClick={resetFilterItems}>RESET</span> : ''}
 						<div className="h6 mb-3">{title}</div>
 						{listFunc().map(item =>
 							<Form.Check type="checkbox" label={itemDisplayFunc ? itemDisplayFunc(item) : item} key={item} checked={filterItems.includes(item)} onChange={(e) => toggleFilterItem(item, e.target.checked)} />
@@ -50,9 +50,22 @@ Helpers.filterIcon = function(title, listFunc, filterItems, setFilterItemsFunc, 
 				</Popover>
 			}
 		>
-			<i className={"bi bi-funnel-fill small ms-1 "+(filterItems.length>0?'text-primary':'opacity-25')}></i>
+			<i className={"bi bi-funnel-fill small ms-1 " + (filterItems.length > 0 ? 'text-primary' : 'opacity-25')}></i>
 		</OverlayTrigger>
 	)
+}
+
+Helpers.Header = function (props) {
+	return (
+		<>
+			<div className="h2 fw-light">{props.title}</div>
+			<div className='opacity-50'>{props.subtitle}</div>
+		</>
+	)
+}
+
+Helpers.Loading = function (props) {
+	return <div className='text-center my-5'><Spinner animation="border" variant="black" className="my-5 opacity-25" /></div>
 }
 
 export default Helpers;

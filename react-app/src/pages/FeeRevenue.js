@@ -23,7 +23,7 @@ export default function() {
 		const dateString = moment().subtract(1, 'days').format('YYYY-MM-DD')
 
 		let { data } = await axios.get(Helpers.cryptostatsURL('fees', ['oneDayTotalFees'], [dateString], true))
-		data.data = data.data.filter(protocol => protocol.results.oneDayTotalFees !== null);
+		data.data = data.data.filter(protocol => protocol.results.oneDayTotalFees !== null && protocol.results.oneDayTotalFees > 0);
 		data.data = data.data.sort((a, b) => b.results.oneDayTotalFees - a.results.oneDayTotalFees);
 		data.data.forEach(protocol => protocol.metadata.blockchain = protocol.metadata.blockchain || 'Other');
 
@@ -54,10 +54,9 @@ export default function() {
 
 	return (
 		<>
-			<div className="h2 fw-light">Fee Revenue</div>
-			<div className='opacity-50'>Total fees paid to a protocol on a given day.</div>
+			<Helpers.Header title='Fee Revenue' subtitle='Total fees paid to a protocol on a given day.' />
 
-			{protocols.length == 0 && <div className='text-center'><Spinner animation="border" variant="secondary" className="my-5" /></div>}
+			{protocols.length == 0 && <Helpers.Loading />}
 
 			{protocols && protocols.length > 0 &&
 				<Table responsive className=" my-5">
