@@ -5,9 +5,22 @@ import './App.css';
 import FeeRevenue from './pages/FeeRevenue';
 import Issuance from './pages/Issuance';
 import TransactionFees from './pages/TransactionFees';
+import DAOTreasuries from './pages/DAOTreasuries';
+import ActiveAddresses from './pages/ActiveAddresses';
+import TransactionCount from './pages/TransactionCount';
 
 
 function App() {
+
+	let routes = [
+		{ path: '/fee-revenue', component: FeeRevenue, title: '💰  Fee Revenue' },
+		{ path: '/issuance', component: Issuance, title: '🖨  Issuance' },
+		{ path: '/transaction-fees', component: TransactionFees, title: '💳  Transaction Fees' },
+		{ path: '/dao-treasuries', component: DAOTreasuries, title: '🏛  DAO Treasuries' },
+		{ path: '/active-addresses', component: ActiveAddresses, title: '👤  Active Addresses' },
+		// { path: '/transaction-count', component: TransactionCount, title: '🎟  Transaction Count' },
+	]
+
 	return (
 		<div className="App container">
 
@@ -19,9 +32,7 @@ function App() {
 						<Navbar.Toggle className="d-lg-none border-0" />
 						<Navbar.Collapse id="basic-navbar-nav " className="d-lg-block">
 							<Nav className="me-auto py-3 py-lg-5 fw-500">
-								<NavLink className="nav-link" to="/fee-revenue">💰&nbsp;&nbsp;Fee Revenue</NavLink>
-								<NavLink className="nav-link" to="/issuance">🖨&nbsp;&nbsp;Issuance</NavLink>
-								<NavLink className="nav-link" to="/transaction-fees">💳&nbsp;&nbsp;Transaction Fees</NavLink>
+								{routes.map(route => <NavLink className="nav-link" style={{whiteSpace: 'pre'}} to={route.path} key={route.path}>{route.title}</NavLink>)}
 							</Nav>
 							<div className="opacity-50 smaller lh-lg">
 								<div>Data from <a href="https://cryptostats.community" target="_blank" className="text-reset">CryptoStats</a></div>
@@ -37,9 +48,7 @@ function App() {
 					<main>
 						<Routes>
 							<Route path="/" element={<Navigate to="/fee-revenue" />} ></Route>
-							<Route path="/fee-revenue" element={<FeeRevenue />} />
-							<Route path="/issuance" element={<Issuance />} />
-							<Route path="/transaction-fees" element={<TransactionFees />} />
+							{routes.map(route => <Route path={route.path} element={<route.component />} key={route.path} />)}
 						</Routes>
 					</main>
 

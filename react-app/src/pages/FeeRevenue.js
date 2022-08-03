@@ -21,7 +21,6 @@ export default function() {
 
 	async function fetchData() {
 		const dateString = moment().subtract(1, 'days').format('YYYY-MM-DD')
-
 		let { data } = await axios.get(Helpers.cryptostatsURL('fees', ['oneDayTotalFees'], [dateString], true))
 		data.data = data.data.filter(protocol => protocol.results.oneDayTotalFees !== null && protocol.results.oneDayTotalFees > 0);
 		data.data = data.data.sort((a, b) => b.results.oneDayTotalFees - a.results.oneDayTotalFees);

@@ -22,6 +22,9 @@ Helpers.Icon = function (props) {
 Helpers.currency = function (number, decimals = 0) {
 	return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: decimals }).format(number)
 }
+Helpers.number = function (number, decimals = 0) {
+	return new Intl.NumberFormat('en-US', { style: 'decimal', maximumFractionDigits: decimals }).format(number)
+}
 Helpers.percent = function (number) {
 	return (number * 100).toFixed(2) + '%'
 }
