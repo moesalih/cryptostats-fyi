@@ -18,7 +18,7 @@ function App() {
 		{ path: '/transaction-fees', component: TransactionFees, title: '💳  Transaction Fees' },
 		{ path: '/dao-treasuries', component: DAOTreasuries, title: '🏛  DAO Treasuries' },
 		{ path: '/active-addresses', component: ActiveAddresses, title: '👤  Active Addresses' },
-		// { path: '/transaction-count', component: TransactionCount, title: '🎟  Transaction Count' },
+		{ path: '/transaction-count', component: TransactionCount, title: '🎟  Transaction Count' },
 	]
 
 	return (

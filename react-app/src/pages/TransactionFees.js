@@ -15,16 +15,12 @@ export default function() {
 	const [protocols, setProtocols] = useState([]);
 
 	async function fetchData() {
-		let { data } = await axios.get(Helpers.cryptostatsURL('l2-fees', ['feeTransferEth', 'feeSwap'], [], true))
-		let protocols = data.data
-		protocols = protocols.filter(protocol => protocol.results.feeTransferEth !== null);
-		protocols = protocols.sort((a, b) => a.results.feeTransferEth - b.results.feeTransferEth);
-
-		let { data:ethData } = await axios.get(Helpers.cryptostatsURL('l1-fees', ['feeTransferEth', 'feeSwap'], [], true))
-
-		protocols = [...protocols, ...ethData.data]
-		console.log(protocols);
-		setProtocols(protocols);
+		let protocols = await Helpers.loadCryptoStats('l2-fees', ['feeTransferEth', 'feeSwap'])
+		if (protocols) {
+			protocols = protocols.sort((a, b) => a.results.feeTransferEth - b.results.feeTransferEth);
+		}
+		let ethProtocol = await Helpers.loadCryptoStats('l1-fees', ['feeTransferEth', 'feeSwap'])
+		setProtocols([...protocols, ...ethProtocol])
 	}
 
 	let getFilteredProtocols = function () {
@@ -49,7 +45,6 @@ export default function() {
 				<Table responsive className=" my-5">
 					<thead>
 						<tr className='fw-normal small'>
-							<th style={{width: '2em'}}></th>
 							<th ></th>
 							<th className="text-end opacity-50">Send ETH</th>
 							<th className="text-end opacity-50">Swap Tokens</th>
@@ -59,12 +54,10 @@ export default function() {
 						{getFilteredProtocols() && getFilteredProtocols().map((protocol, index) => {
 							return (
 								<tr key={index}>
-									<td className="text-center" ><Helpers.Icon src={protocol.metadata.icon} /></td>
 									<td >
-										<span className='fw-500'>{protocol.metadata.name}</span> 
-										<span className='opacity-50'>{protocol.metadata.subtitle}</span> 
-										{protocol.metadata.flags && protocol.metadata.flags.warning ? <i className='bi bi-exclamation-triangle opacity-50 ms-2' title={protocol.metadata.flags.warning}></i> : ''}
-										{protocol.metadata.flags && protocol.metadata.flags.throtle ? <i className='bi bi-speedometer2 opacity-50 ms-2' title={protocol.metadata.flags.throtle}></i> : ''}
+										<Helpers.ProtocolIconName protocol={protocol} />
+										{protocol.metadata.flags && protocol.metadata.flags.warning ? <i className='bi bi-exclamation-triangle opacity-50 me-2' title={protocol.metadata.flags.warning}></i> : ''}
+										{protocol.metadata.flags && protocol.metadata.flags.throtle ? <i className='bi bi-speedometer2 opacity-50 me-2' title={protocol.metadata.flags.throtle}></i> : ''}
 									</td>
 									<td className="text-end"><span className="font-monospace" title={protocol.results.feeTransferEth}>{Helpers.currency(protocol.results.feeTransferEth, 2)}</span></td>
 									<td className="text-end"><span className="font-monospace" title={protocol.results.feeSwap}>{protocol.results.feeSwap ? Helpers.currency(protocol.results.feeSwap, 2) : '-'}</span></td>

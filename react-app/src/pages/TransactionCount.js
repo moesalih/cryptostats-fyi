@@ -16,13 +16,11 @@ export default function() {
 
 	async function fetchData() {
 		const dateString = moment().subtract(1, 'days').format('YYYY-MM-DD')
-		let { data } = await axios.get(Helpers.cryptostatsURL('tx-count', ['txCountOneDay'], [dateString], true))
-		let protocols = data.data
-		protocols = protocols.filter(protocol => protocol.results.txCountOneDay !== null);
-		protocols = protocols.sort((a, b) => b.results.txCountOneDay - a.results.txCountOneDay);
-
-		console.log(protocols);
-		setProtocols(protocols);
+		let protocols = await Helpers.loadCryptoStats('tx-count', ['txCountOneDay'], [dateString])
+		if (protocols) {
+			protocols = protocols.sort((a, b) => b.results.txCountOneDay - a.results.txCountOneDay);
+		}
+		setProtocols(protocols)
 	}
 
 	let getFilteredProtocols = function () {
@@ -47,7 +45,6 @@ export default function() {
 				<Table responsive className=" my-5">
 					<thead>
 						<tr className='fw-normal small'>
-							<th style={{width: '2em'}}></th>
 							<th ></th>
 							<th className="text-end opacity-50">Daily Transaction Count</th>
 						</tr>
@@ -56,11 +53,7 @@ export default function() {
 						{getFilteredProtocols() && getFilteredProtocols().map((protocol, index) => {
 							return (
 								<tr key={index}>
-									<td className="text-center" ><Helpers.Icon src={protocol.metadata.icon} /></td>
-									<td >
-										<span className='fw-500'>{protocol.metadata.name}</span> 
-										<span className='opacity-50'>{protocol.metadata.subtitle}</span> 
-									</td>
+									<td ><Helpers.ProtocolIconName protocol={protocol} /></td>
 									<td className="text-end"><span className="font-monospace">{Helpers.number(protocol.results.txCountOneDay, 2)}</span></td>
 								</tr>
 							)

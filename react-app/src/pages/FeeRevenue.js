@@ -21,13 +21,13 @@ export default function() {
 
 	async function fetchData() {
 		const dateString = moment().subtract(1, 'days').format('YYYY-MM-DD')
-		let { data } = await axios.get(Helpers.cryptostatsURL('fees', ['oneDayTotalFees'], [dateString], true))
-		data.data = data.data.filter(protocol => protocol.results.oneDayTotalFees !== null && protocol.results.oneDayTotalFees > 0);
-		data.data = data.data.sort((a, b) => b.results.oneDayTotalFees - a.results.oneDayTotalFees);
-		data.data.forEach(protocol => protocol.metadata.blockchain = protocol.metadata.blockchain || 'Other');
-
-		console.log(data.data);
-		setProtocols(data.data);
+		let protocols = await Helpers.loadCryptoStats('fees', ['oneDayTotalFees'], [dateString])
+		if (protocols) {
+			protocols = protocols.filter(protocol => protocol.results.oneDayTotalFees !== null && protocol.results.oneDayTotalFees > 0);
+			protocols = protocols.sort((a, b) => b.results.oneDayTotalFees - a.results.oneDayTotalFees);
+			protocols.forEach(protocol => protocol.metadata.blockchain = protocol.metadata.blockchain || 'Other');	
+		}
+		setProtocols(protocols)
 	}
 
 	let getIconForNetwork = function (network) {
@@ -55,17 +55,16 @@ export default function() {
 		<>
 			<Helpers.Header title='Fee Revenue' subtitle='Total fees paid to a protocol on a given day.' />
 
-			{protocols.length == 0 && <Helpers.Loading />}
+			{protocols && protocols.length == 0 && <Helpers.Loading />}
+			{!protocols && <Helpers.Error />}
 
 			{protocols && protocols.length > 0 &&
 				<Table responsive className=" my-5">
 					<thead>
 						<tr className='fw-normal small'>
-							<th style={{width: '2em'}}></th>
 							<th ></th>
 							<th className="text-center text-nowrap"><span className='opacity-50'>Chain</span> {Helpers.filterIcon('Chain', getChains, chainFilter, setChainFilter)}</th>
 							<th ><span className='opacity-50'>Category</span> {Helpers.filterIcon('Category', getCategories, categoryFilter, setCategoryFilter, item => item.toUpperCase())}</th>
-							<th ></th>
 							<th className="text-end opacity-50">1 Day Fees</th>
 						</tr>
 					</thead>
@@ -73,11 +72,9 @@ export default function() {
 						{getFilteredProtocols() && getFilteredProtocols().map((protocol, index) => {
 							return (
 								<tr key={index}>
-									<td className="text-center" ><Helpers.Icon src={protocol.metadata.icon} /></td>
-									<td ><span className='fw-500'>{protocol.metadata.name}</span> <span className='opacity-50'>{protocol.metadata.subtitle}</span></td>
+									<td ><Helpers.ProtocolIconName protocol={protocol} /></td>
 									<td className="text-center" ><Helpers.Icon src={getIconForNetwork(protocol.metadata.blockchain)} title={protocol.metadata.blockchain} className="smaller" /></td>
 									<td ><span className='text-uppercase small '>{protocol.metadata.category}</span></td>
-									<td ></td>
 									<td className="text-end"><span className="font-monospace">{Helpers.currency(protocol.results.oneDayTotalFees)}</span></td>
 								</tr>
 							)

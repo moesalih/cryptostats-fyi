@@ -1,5 +1,8 @@
 import { Container, Navbar, Nav, NavDropdown, Dropdown, NavItem, NavLink, Spinner, Button, Popover, OverlayTrigger, Form, Table } from 'react-bootstrap';
 
+const axios = require('axios').default;
+
+
 
 let Helpers = {}
 
@@ -11,11 +14,31 @@ Helpers.cryptostatsURL = (collection, queries, args, metadata) => {
 	url += '?metadata=' + metadata
 	return url
 }
+Helpers.loadCryptoStats = async (collection, queries, args = [], metadata = true) => {
+	try {
+		let { data } = await axios.get(Helpers.cryptostatsURL(collection, queries, args, metadata))
+		let protocols = data.data
+		if (protocols) protocols = protocols.filter(protocol => protocol.results[queries[0]] !== null)
+		console.log('🌧 CryptoStats', collection, queries, protocols)
+		return protocols
+	} catch (error) {
+		return null
+	}
+}
 
 
 Helpers.Icon = function (props) {
 	return (
-		<img className="align-text-top" style={{ height: '1.3em', width: '1.3em', objectFit: 'contain' }} {...props} />
+		<img  style={{ height: '1.3em', width: '1.3em', objectFit: 'contain', verticalAlign: '-0.25em' }} {...props} />
+	)
+}
+Helpers.ProtocolIconName = function (props) {
+	return (
+		<>
+			<Helpers.Icon src={props.protocol.metadata.icon} className='me-3' />
+			<span className='fw-500 me-1'>{props.protocol.metadata.name}</span>
+			{props.protocol.metadata.subtitle && <span className='opacity-50 me-2'>{props.protocol.metadata.subtitle}</span>}
+		</>
 	)
 }
 
@@ -68,7 +91,10 @@ Helpers.Header = function (props) {
 }
 
 Helpers.Loading = function (props) {
-	return <div className='text-center my-5'><Spinner animation="border" variant="black" className="my-5 opacity-25" /></div>
+	return <div className='text-center my-5 py-5 opacity-25'><Spinner animation="border" variant="black" /></div>
+}
+Helpers.Error = function (props) {
+	return <div className='text-center my-5 py-5 opacity-25 fw-500'><div><i className='bi bi-exclamation-circle-fill'></i></div><div>Error loading data</div></div>
 }
 
 export default Helpers;
