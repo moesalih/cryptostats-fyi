@@ -52,8 +52,7 @@ Helpers.percent = function (number) {
 	return (number * 100).toFixed(2) + '%'
 }
 
-
-Helpers.filterIcon = function (title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc) {
+Helpers.filterOverlay = function (title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc, trigger) {
 	function resetFilterItems() { setFilterItemsFunc([]) }
 	let toggleFilterItem = function (item, status) {
 		setFilterItemsFunc(status ? filterItems.concat(item) : filterItems.filter(c => c !== item))
@@ -76,9 +75,16 @@ Helpers.filterIcon = function (title, listFunc, filterItems, setFilterItemsFunc,
 				</Popover>
 			}
 		>
-			<i className={"bi bi-funnel-fill small ms-1 " + (filterItems.length > 0 ? 'text-primary' : 'opacity-25')}></i>
+			{trigger}
 		</OverlayTrigger>
 	)
+}
+
+Helpers.filterIcon = function (title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc) {
+	return Helpers.filterOverlay(title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc, <i className={"bi bi-funnel-fill small ms-1 " + (filterItems.length > 0 ? 'text-primary' : 'opacity-25')}></i>)
+}
+Helpers.filterButton = function (title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc) {
+	return Helpers.filterOverlay(title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc, <Button variant="light" >{title} <i className={"bi bi-funnel-fill small ms-1x " + (filterItems.length > 0 ? 'text-primary' : 'opacity-25')}></i></Button>)
 }
 
 Helpers.Header = function (props) {

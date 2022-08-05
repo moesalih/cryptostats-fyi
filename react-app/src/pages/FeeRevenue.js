@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
-import { Container, Navbar, Nav, NavDropdown, Dropdown, NavItem, NavLink, Spinner, Button, Popover, OverlayTrigger, Form, Table } from 'react-bootstrap';
+import { Container, Navbar, Nav, NavDropdown, Dropdown, NavItem, NavLink, Spinner, Button, ButtonGroup, OverlayTrigger, Form, Table } from 'react-bootstrap';
 
 import Helpers from '../Helpers';
 
@@ -13,7 +13,7 @@ const moment = require('moment')
 
 
 
-export default function() {
+export default function () {
 
 	const [protocols, setProtocols] = useState([]);
 	const [categoryFilter, setCategoryFilter] = useState([]);
@@ -25,7 +25,7 @@ export default function() {
 		if (protocols) {
 			protocols = protocols.filter(protocol => protocol.results.oneDayTotalFees !== null && protocol.results.oneDayTotalFees > 0);
 			protocols = protocols.sort((a, b) => b.results.oneDayTotalFees - a.results.oneDayTotalFees);
-			protocols.forEach(protocol => protocol.metadata.blockchain = protocol.metadata.blockchain || 'Other');	
+			protocols.forEach(protocol => protocol.metadata.blockchain = protocol.metadata.blockchain || 'Other');
 		}
 		setProtocols(protocols)
 	}
@@ -59,29 +59,38 @@ export default function() {
 			{!protocols && <Helpers.Error />}
 
 			{protocols && protocols.length > 0 &&
-				<Table responsive className=" my-5">
-					<thead>
-						<tr className='fw-normal small'>
-							<th ></th>
-							<th className="text-center text-nowrap"><span className='opacity-50'>Chain</span> {Helpers.filterIcon('Chain', getChains, chainFilter, setChainFilter)}</th>
-							<th ><span className='opacity-50'>Category</span> {Helpers.filterIcon('Category', getCategories, categoryFilter, setCategoryFilter, item => item.toUpperCase())}</th>
-							<th className="text-end opacity-50">1 Day Fees</th>
-						</tr>
-					</thead>
-					<tbody>
-						{getFilteredProtocols() && getFilteredProtocols().map((protocol, index) => {
-							return (
-								<tr key={index}>
-									<td ><Helpers.ProtocolIconName protocol={protocol} /></td>
-									<td className="text-center" ><Helpers.Icon src={getIconForNetwork(protocol.metadata.blockchain)} title={protocol.metadata.blockchain} className="smaller" /></td>
-									<td ><span className='text-uppercase small '>{protocol.metadata.category}</span></td>
-									<td className="text-end"><span className="font-monospace">{Helpers.currency(protocol.results.oneDayTotalFees)}</span></td>
-								</tr>
-							)
-						})}
+				<>
+					<div className='text-end'>
+						<ButtonGroup size="sm" className='mt-4'>
+							{Helpers.filterButton('Chain', getChains, chainFilter, setChainFilter)}
+							{Helpers.filterButton('Category', getCategories, categoryFilter, setCategoryFilter, item => item.toUpperCase())}
+						</ButtonGroup>
+					</div>
+					<Table responsive className="mt-4 mb-5">
+						<thead>
+							<tr className='fw-normal small'>
+								<th ></th>
+								<th className="text-center opacity-50">Chain</th>
+								<th className=" opacity-50">Category</th>
+								<th className="text-end opacity-50">1 Day Fees</th>
+							</tr>
+						</thead>
+						<tbody>
+							{getFilteredProtocols() && getFilteredProtocols().map((protocol, index) => {
+								return (
+									<tr key={index}>
+										<td ><Helpers.ProtocolIconName protocol={protocol} /></td>
+										<td className="text-center" ><Helpers.Icon src={getIconForNetwork(protocol.metadata.blockchain)} title={protocol.metadata.blockchain} className="smaller" /></td>
+										<td ><span className='text-uppercase small '>{protocol.metadata.category}</span></td>
+										<td className="text-end"><span className="font-monospace">{Helpers.currency(protocol.results.oneDayTotalFees)}</span></td>
+									</tr>
+								)
+							})}
 
-					</tbody>
-				</Table>
+						</tbody>
+					</Table>
+				</>
+
 			}
 
 		</>

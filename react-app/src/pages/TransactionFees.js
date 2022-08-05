@@ -56,8 +56,8 @@ export default function() {
 								<tr key={index}>
 									<td >
 										<Helpers.ProtocolIconName protocol={protocol} />
-										{protocol.metadata.flags && protocol.metadata.flags.warning ? <i className='bi bi-exclamation-triangle opacity-50 me-2' title={protocol.metadata.flags.warning}></i> : ''}
-										{protocol.metadata.flags && protocol.metadata.flags.throtle ? <i className='bi bi-speedometer2 opacity-50 me-2' title={protocol.metadata.flags.throtle}></i> : ''}
+										{protocol.metadata.flags && protocol.metadata.flags.warning ? <i className='bi bi-exclamation-triangle opacity-50 ms-1' title={protocol.metadata.flags.warning}></i> : ''}
+										{protocol.metadata.flags && protocol.metadata.flags.throtle ? <i className='bi bi-speedometer2 opacity-50 ms-1' title={protocol.metadata.flags.throtle}></i> : ''}
 									</td>
 									<td className="text-end"><span className="font-monospace" title={protocol.results.feeTransferEth}>{Helpers.currency(protocol.results.feeTransferEth, 2)}</span></td>
 									<td className="text-end"><span className="font-monospace" title={protocol.results.feeSwap}>{protocol.results.feeSwap ? Helpers.currency(protocol.results.feeSwap, 2) : '-'}</span></td>
