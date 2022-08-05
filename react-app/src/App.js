@@ -25,7 +25,7 @@ function App() {
 		<div className="App container">
 
 			<div className="row">
-				<div className="col-lg-3">
+				<div className="col-lg-3 px-lg-4">
 
 					<Navbar collapseOnSelect expand="none" className="py-2 py-lg-4 sticky-lg-top">
 						<div className="fw-bold h2 my-0">CryptoStats<span className="smaller">.FYI</span></div>
@@ -43,7 +43,7 @@ function App() {
 					</Navbar>
 
 				</div>
-				<div className="col py-4">
+				<div className="col py-4 px-lg-4">
 
 					<main>
 						<Routes>

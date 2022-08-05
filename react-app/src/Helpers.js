@@ -37,7 +37,7 @@ Helpers.ProtocolIconName = function (props) {
 		<>
 			<Helpers.Icon src={props.protocol.metadata.icon} className='me-3' />
 			<span className='fw-500 me-1'>{props.protocol.metadata.name}</span>
-			{props.protocol.metadata.subtitle && <span className='opacity-50 me-2'>{props.protocol.metadata.subtitle}</span>}
+			{props.protocol.metadata.subtitle && <span className='opacity-50 me-2 small'>{props.protocol.metadata.subtitle}</span>}
 		</>
 	)
 }

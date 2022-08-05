@@ -71,7 +71,7 @@ export default function () {
 							<tr className='fw-normal small'>
 								<th ></th>
 								<th className="text-center opacity-50">Chain</th>
-								<th className=" opacity-50">Category</th>
+								<th className=" opacity-50 d-none d-md-table-cell">Category</th>
 								<th className="text-end opacity-50">1 Day Fees</th>
 							</tr>
 						</thead>
@@ -81,7 +81,7 @@ export default function () {
 									<tr key={index}>
 										<td ><Helpers.ProtocolIconName protocol={protocol} /></td>
 										<td className="text-center" ><Helpers.Icon src={getIconForNetwork(protocol.metadata.blockchain)} title={protocol.metadata.blockchain} className="smaller" /></td>
-										<td ><span className='text-uppercase small '>{protocol.metadata.category}</span></td>
+										<td className='d-none d-md-table-cell'><span className='text-uppercase small '>{protocol.metadata.category}</span></td>
 										<td className="text-end"><span className="font-monospace">{Helpers.currency(protocol.results.oneDayTotalFees)}</span></td>
 									</tr>
 								)
