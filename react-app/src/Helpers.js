@@ -70,7 +70,8 @@ Helpers.filterOverlay = function (title, listFunc, filterItems, setFilterItemsFu
 						{filterItems.length > 0 ? <span role="button" className='float-end small text-primary' onClick={resetFilterItems}>RESET</span> : ''}
 						<div className="h6 mb-3">{title}</div>
 						{listFunc().map(item =>
-							<Form.Check type="checkbox" label={itemDisplayFunc ? itemDisplayFunc(item) : item} key={item} checked={filterItems.includes(item)} onChange={(e) => toggleFilterItem(item, e.target.checked)} />
+							<Form.Check type="checkbox" label={itemDisplayFunc ? itemDisplayFunc(item) : item} key={item}
+								checked={filterItems.includes(item)} onChange={(e) => toggleFilterItem(item, e.target.checked)} />
 						)}
 					</Popover.Body>
 				</Popover>
@@ -82,10 +83,16 @@ Helpers.filterOverlay = function (title, listFunc, filterItems, setFilterItemsFu
 }
 
 Helpers.filterIcon = function (title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc) {
-	return Helpers.filterOverlay(title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc, <i className={"bi bi-funnel-fill small ms-1 " + (filterItems.length > 0 ? 'text-primary' : 'opacity-25')}></i>)
+	return Helpers.filterOverlay(title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc, (
+		<i className={"bi bi-funnel-fill small ms-1 " + (filterItems.length > 0 ? 'text-primary' : 'opacity-25')}></i>
+	))
 }
 Helpers.filterButton = function (title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc) {
-	return Helpers.filterOverlay(title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc, <Button variant="light" className={(filterItems.length > 0 ? '' : 'text-muted')}>{title} <i className={"bi bi-funnel-fill small ms-1x " + (filterItems.length > 0 ? 'text-primary' : 'opacity-25')}></i></Button>)
+	return Helpers.filterOverlay(title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc, (
+		<Button variant="light" className={(filterItems.length > 0 ? '' : 'text-muted')}>
+			<i className={"bi bi-funnel-fill small ms-1x " + (filterItems.length > 0 ? 'text-primary' : 'opacity-25')}></i> {title} 
+		</Button>
+	))
 }
 
 Helpers.Header = function (props) {
@@ -111,10 +118,13 @@ const ExpandableRow = function (props) {
 		<>
 			<tr className={(expanded ? 'border-white' : '')}>
 				{props.children}
-				<td className="text-end" style={{ width: '1em' }}><i role='button' className={'small opacity-50 bi ' + (expanded ? 'bi-chevron-up' : 'bi-chevron-down')} onClick={() => setExpanded(!expanded)}></i></td>
+				<td className="text-end" style={{ width: '1em' }}>
+					<i role='button' className={'small opacity-50 bi ' + (expanded ? 'bi-chevron-up' : 'bi-chevron-down')} onClick={() => setExpanded(!expanded)}></i>
+				</td>
 			</tr>
 			{expanded &&
 				<>
+					{props.expandedRows}
 					<tr >
 						<td colSpan={100} className='p-0'>
 							<div className='overflow-hidden'>
