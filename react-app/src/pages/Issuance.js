@@ -47,16 +47,24 @@ export default function() {
 							<th ></th>
 							<th className="text-end opacity-50">Issuance Rate</th>
 							<th className="text-end opacity-50">Daily Issuance</th>
+							<th ></th>
 						</tr>
 					</thead>
 					<tbody>
 						{getFilteredProtocols() && getFilteredProtocols().map((protocol, index) => {
+							const expandedContent = (
+								<>
+									<div className='small mb-2'>{protocol.metadata.issuanceDescription}</div>
+									{protocol.metadata.source && <div className='small'><span className='opacity-50'>Source:</span> {protocol.metadata.source}</div>}
+									{protocol.metadata.website && <div className='small'><span className='opacity-50'>Website:</span> <a href={protocol.metadata.website} target='_blank' className=''>{protocol.metadata.website}</a></div>}
+								</>
+							)
 							return (
-								<tr key={index}>
+								<Helpers.ExpandableRow expandedContent={expandedContent} key={index}>
 									<td ><Helpers.ProtocolIconName protocol={protocol} /></td>
 									<td className="text-end"><span className="font-monospace">{Helpers.percent(protocol.results.issuanceRateCurrent)}</span></td>
 									<td className="text-end"><span className="font-monospace">{Helpers.currency(protocol.results.issuance7DayAvgUSD)}</span></td>
-								</tr>
+								</Helpers.ExpandableRow>
 							)
 						})}
 

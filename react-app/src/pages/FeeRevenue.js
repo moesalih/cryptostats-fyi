@@ -73,17 +73,25 @@ export default function () {
 								<th className="text-center opacity-50">Chain</th>
 								<th className=" opacity-50 d-none d-md-table-cell">Category</th>
 								<th className="text-end opacity-50">1 Day Fees</th>
+								<th ></th>
 							</tr>
 						</thead>
 						<tbody>
 							{getFilteredProtocols() && getFilteredProtocols().map((protocol, index) => {
+								const expandedContent = (
+									<>
+										<div className='small mb-2'>{protocol.metadata.feeDescription}</div>
+										{protocol.metadata.source && <div className='small'><span className='opacity-50'>Source:</span> {protocol.metadata.source}</div>}
+										{protocol.metadata.website && <div className='small'><span className='opacity-50'>Website:</span> <a href={protocol.metadata.website} target='_blank' className=''>{protocol.metadata.website}</a></div>}
+									</>
+								)
 								return (
-									<tr key={index}>
+									<Helpers.ExpandableRow expandedContent={expandedContent} key={index}>
 										<td ><Helpers.ProtocolIconName protocol={protocol} /></td>
 										<td className="text-center" ><Helpers.Icon src={getIconForNetwork(protocol.metadata.blockchain)} title={protocol.metadata.blockchain} className="smaller" /></td>
 										<td className='d-none d-md-table-cell'><span className='text-uppercase small '>{protocol.metadata.category}</span></td>
 										<td className="text-end"><span className="font-monospace">{Helpers.currency(protocol.results.oneDayTotalFees)}</span></td>
-									</tr>
+									</Helpers.ExpandableRow>
 								)
 							})}
 

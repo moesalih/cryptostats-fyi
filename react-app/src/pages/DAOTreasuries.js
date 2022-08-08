@@ -47,16 +47,22 @@ export default function() {
 							<th ></th>
 							<th className="text-end opacity-50">Total Treasury</th>
 							<th className="text-end opacity-50">Liquid Treasury</th>
+							<th ></th>
 						</tr>
 					</thead>
 					<tbody>
 						{getFilteredProtocols() && getFilteredProtocols().map((protocol, index) => {
+							const expandedContent = (
+								<>
+									<div className='small'><span className='opacity-50'>Website:</span> <a href={protocol.metadata.website} target='_blank' className=''>{protocol.metadata.website}</a></div>
+								</>
+							)
 							return (
-								<tr key={index}>
+								<Helpers.ExpandableRow expandedContent={expandedContent} key={index}>
 									<td ><Helpers.ProtocolIconName protocol={protocol} /></td>
 									<td className="text-end"><span className="font-monospace">{Helpers.currency(protocol.results.currentTreasuryUSD, 0)}</span></td>
 									<td className="text-end"><span className="font-monospace">{Helpers.currency(protocol.results.currentLiquidTreasuryUSD, 0)}</span></td>
-								</tr>
+								</Helpers.ExpandableRow>
 							)
 						})}
 

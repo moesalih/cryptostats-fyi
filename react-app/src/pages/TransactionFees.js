@@ -10,9 +10,10 @@ const moment = require('moment')
 
 
 
-export default function() {
+export default function () {
 
 	const [protocols, setProtocols] = useState([]);
+	const [expanded, setExpanded] = useState(null);
 
 	async function fetchData() {
 		let protocols = await Helpers.loadCryptoStats('l2-fees', ['feeTransferEth', 'feeSwap'])
@@ -48,12 +49,19 @@ export default function() {
 							<th ></th>
 							<th className="text-end opacity-50">Send ETH</th>
 							<th className="text-end opacity-50">Swap Tokens</th>
+							<th ></th>
 						</tr>
 					</thead>
 					<tbody>
 						{getFilteredProtocols() && getFilteredProtocols().map((protocol, index) => {
+							const expandedContent = (
+								<>
+									<div className='small mb-2'>{protocol.metadata.description}</div>
+									<div className='small'><span className='opacity-50'>Website:</span> <a href={protocol.metadata.website} target='_blank' className=''>{protocol.metadata.website}</a></div>
+								</>
+							)
 							return (
-								<tr key={index}>
+								<Helpers.ExpandableRow expandedContent={expandedContent} key={index}>
 									<td >
 										<Helpers.ProtocolIconName protocol={protocol} />
 										{protocol.metadata.flags && protocol.metadata.flags.warning ? <i className='bi bi-exclamation-triangle opacity-50 ms-1' title={protocol.metadata.flags.warning}></i> : ''}
@@ -61,7 +69,7 @@ export default function() {
 									</td>
 									<td className="text-end"><span className="font-monospace" title={protocol.results.feeTransferEth}>{Helpers.currency(protocol.results.feeTransferEth, 2)}</span></td>
 									<td className="text-end"><span className="font-monospace" title={protocol.results.feeSwap}>{protocol.results.feeSwap ? Helpers.currency(protocol.results.feeSwap, 2) : '-'}</span></td>
-								</tr>
+								</Helpers.ExpandableRow>
 							)
 						})}
 

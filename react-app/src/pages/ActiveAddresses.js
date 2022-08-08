@@ -10,7 +10,7 @@ const moment = require('moment')
 
 
 
-export default function() {
+export default function () {
 
 	const [protocols, setProtocols] = useState([]);
 
@@ -47,15 +47,22 @@ export default function() {
 						<tr className='fw-normal small'>
 							<th ></th>
 							<th className="text-end opacity-50">Daily Active Addresses</th>
+							<th ></th>
 						</tr>
 					</thead>
 					<tbody>
 						{getFilteredProtocols() && getFilteredProtocols().map((protocol, index) => {
+							const expandedContent = (
+								<>
+									{protocol.metadata.source && <div className='small'><span className='opacity-50'>Source:</span> {protocol.metadata.source}</div>}
+									{protocol.metadata.website && <div className='small'><span className='opacity-50'>Website:</span> <a href={protocol.metadata.website} target='_blank' className=''>{protocol.metadata.website}</a></div>}
+								</>
+							)
 							return (
-								<tr key={index}>
+								<Helpers.ExpandableRow expandedContent={expandedContent} key={index}>
 									<td ><Helpers.ProtocolIconName protocol={protocol} /></td>
 									<td className="text-end"><span className="font-monospace">{Helpers.number(protocol.results.activeAddressesOneDay, 2)}</span></td>
-								</tr>
+								</Helpers.ExpandableRow>
 							)
 						})}
 
