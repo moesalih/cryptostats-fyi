@@ -25,12 +25,12 @@ function App() {
 		<div className="App container">
 
 			<div className="row">
-				<div className="col-lg-3 xcol-xxl-2 px-lg-4 xbg-light min-vh-100">
+				<div className="col-lg-3 xcol-xxl-2 px-lg-4 xbg-light ">
 
 					<Navbar collapseOnSelect expand="none" className="py-2 py-lg-4 sticky-lg-top">
 						<div className="fw-bold h2 my-0">CryptoStats<span className="smaller">.FYI</span></div>
 						<Navbar.Toggle className="d-lg-none border-0" />
-						<Navbar.Collapse id="basic-navbar-nav " className="d-lg-block">
+						<Navbar.Collapse id="basic-navbar-nav " className="d-lg-block min-vh-100x">
 							<Nav className="me-auto py-3 py-lg-5 fw-500">
 								{routes.map(route => <NavLink className="nav-link" style={{whiteSpace: 'pre'}} to={route.path} key={route.path}>{route.title}</NavLink>)}
 							</Nav>
