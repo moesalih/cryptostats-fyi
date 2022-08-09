@@ -88,9 +88,10 @@ Helpers.filterIcon = function (title, listFunc, filterItems, setFilterItemsFunc,
 	))
 }
 Helpers.filterButton = function (title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc) {
+	let combinedFilterItems = filterItems.join(', ')
 	return Helpers.filterOverlay(title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc, (
 		<Button variant="light" className={(filterItems.length > 0 ? '' : 'text-muted')}>
-			<i className={"bi bi-funnel-fill small ms-1x " + (filterItems.length > 0 ? 'text-primary' : 'opacity-25')}></i> {title} 
+			<i className={"bi bi-funnel-fill small ms-1x " + (filterItems.length > 0 ? 'text-primary' : 'opacity-25')}></i> {filterItems.length == 0 ? title : itemDisplayFunc ? itemDisplayFunc(combinedFilterItems) : combinedFilterItems} 
 		</Button>
 	))
 }

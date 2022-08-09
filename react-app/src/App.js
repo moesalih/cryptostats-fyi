@@ -35,8 +35,8 @@ function App() {
 								{routes.map(route => <NavLink className="nav-link" style={{whiteSpace: 'pre'}} to={route.path} key={route.path}>{route.title}</NavLink>)}
 							</Nav>
 							<div className="opacity-50 smaller lh-lg">
-								<div>Data from <a href="https://cryptostats.community" target="_blank" className="text-reset">CryptoStats</a></div>
-								<div>Created by <a href="https://twitter.com/0xMoe_" target="_blank" className="text-reset">MOΞ</a></div>
+								<div>Data from <a href="https://cryptostats.community" target="_blank" className="text-reset fw-600 text-decoration-none">CryptoStats</a></div>
+								<div>Created by <a href="https://twitter.com/0xMoe_" target="_blank" className="text-reset fw-600 text-decoration-none">MOΞ</a></div>
 								<hr className="d-lg-none" />
 							</div>
 						</Navbar.Collapse>

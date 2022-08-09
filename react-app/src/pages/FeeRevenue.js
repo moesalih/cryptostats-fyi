@@ -106,7 +106,7 @@ export default function () {
 						<thead>
 							<tr className='fw-normal small'>
 								<th ></th>
-								<th className=" opacity-50 d-none d-md-table-cell">Chain</th>
+								<th className="text-end opacity-50 d-none d-md-table-cell">Chain</th>
 								{/* <th className=" opacity-50 d-none d-md-table-cell">Category</th> */}
 								<th className="text-end opacity-50">1 Day Fees</th>
 								<th ></th>
@@ -128,7 +128,7 @@ export default function () {
 										{(bundled && protocol.protocols.length > 1 ? protocol.protocols : []).map((protocol) =>
 											<tr className='border-light bg-light small'>
 												<td ><Helpers.ProtocolIconName protocol={protocol} /></td>
-												<td className="d-none d-md-table-cell " >
+												<td className="d-none d-md-table-cell text-end" >
 													<Helpers.Icon src={getIconForNetwork(protocol.metadata.blockchain)} title={protocol.metadata.blockchain} className="smaller" />
 												</td>
 												{/* <td className='d-none d-md-table-cell'><span className='text-uppercase small '>{protocol.metadata.category}</span></td> */}
@@ -141,7 +141,7 @@ export default function () {
 								return (
 									<Helpers.ExpandableRow expandedContent={expandedContent} expandedRows={expandedRows} key={protocol.id}>
 										<td ><Helpers.ProtocolIconName protocol={protocol} /></td>
-										<td className="d-none d-md-table-cell " >{bundled ? protocol.protocols.map(protocol => protocol.metadata.blockchain).filter(Helpers.unique).map(blockchain =>
+										<td className="d-none d-md-table-cell text-end" >{bundled ? protocol.protocols.map(protocol => protocol.metadata.blockchain).filter(Helpers.unique).map(blockchain =>
 											<Helpers.Icon src={getIconForNetwork(blockchain)} title={blockchain} className="smaller me-1" />
 										) : (
 											<Helpers.Icon src={getIconForNetwork(protocol.metadata.blockchain)} title={protocol.metadata.blockchain} className="smaller" />
