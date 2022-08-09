@@ -5,3 +5,6 @@ thead th {
 .popover .popover-arrow {
 	display: none !important;
 }
+.react-datepicker-wrapper {
+	width: auto !important;
+}

@@ -1,6 +1,7 @@
 import { Routes, Route, Link, NavLink, Navigate } from "react-router-dom";
 import { Container, Navbar, Nav, NavDropdown, Dropdown, NavItem, Spinner, Button, Popover, OverlayTrigger, Form, Table } from 'react-bootstrap';
 import './App.css';
+import "react-datepicker/dist/react-datepicker.css";
 
 import FeeRevenue from './pages/FeeRevenue';
 import Issuance from './pages/Issuance';

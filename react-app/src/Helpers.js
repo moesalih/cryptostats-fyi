@@ -20,7 +20,7 @@ Helpers.loadCryptoStats = async (collection, queries, args = [], metadata = true
 		let { data } = await axios.get(Helpers.cryptostatsURL(collection, queries, args, metadata))
 		let protocols = data.data
 		if (protocols) protocols = protocols.filter(protocol => protocol.results[queries[0]] !== null)
-		console.log('🌧 CryptoStats', collection, queries, protocols)
+		console.log('🌧 CryptoStats', collection, queries, args, protocols)
 		return protocols
 	} catch (error) {
 		return null

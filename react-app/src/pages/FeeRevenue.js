@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import { Link } from "react-router-dom";
 import { Container, Navbar, Nav, NavDropdown, Dropdown, NavItem, NavLink, Spinner, Button, ButtonGroup, OverlayTrigger, Form, Table } from 'react-bootstrap';
+import DatePicker from 'react-datepicker';
 
 import Helpers from '../Helpers';
 
@@ -19,9 +20,10 @@ export default function () {
 	const [categoryFilter, setCategoryFilter] = useState([]);
 	const [chainFilter, setChainFilter] = useState([]);
 	const [bundled, setBundled] = useState(true);
+	const [date, setDate] = useState(moment().subtract(1, 'days').toDate());
 
 	async function fetchData() {
-		const dateString = moment().subtract(1, 'days').format('YYYY-MM-DD')
+		const dateString = moment(date).format('YYYY-MM-DD')
 		let protocols = await Helpers.loadCryptoStats('fees', ['oneDayTotalFees'], [dateString])
 		if (protocols) {
 			protocols = protocols.filter(protocol => protocol.results.oneDayTotalFees !== null && protocol.results.oneDayTotalFees > 0);
@@ -65,7 +67,7 @@ export default function () {
 				bundles.push(bundle)
 			}
 		})
-		console.log(bundles);
+		// console.log(bundles);
 		return bundles
 	}
 
@@ -81,7 +83,12 @@ export default function () {
 
 	useEffect(() => {
 		fetchData()
-	}, [])
+	}, [date])
+
+	let dateChanged = (date) => {
+		setDate(date)
+		setProtocols([])
+	}
 
 
 	return (
@@ -97,10 +104,13 @@ export default function () {
 						<Button variant="light" size='sm' className={'me-2 ' + (bundled ? '' : 'text-muted')} onClick={() => { setBundled(!bundled) }}>
 							<i className={"small bi  " + (bundled ? 'bi-check-square-fill text-primary ' : 'bi-square opacity-25')}></i> Bundle
 						</Button>
-						<ButtonGroup size="sm" className=''>
+						<ButtonGroup size="sm" className='me-2'>
 							{Helpers.filterButton('Chain', getChains, chainFilter, setChainFilter)}
 							{Helpers.filterButton('Category', getCategories, categoryFilter, setCategoryFilter, item => item.toUpperCase())}
 						</ButtonGroup>
+						<DatePicker maxDate={moment().subtract(1, 'days').toDate()} selected={date} onChange={dateChanged} customInput={
+							<Button variant="light" size='sm'><i className='bi bi-calendar-event text-primary'></i> {moment(date).format('YYYY-MM-DD')}</Button>
+						} />
 					</div>
 					<Table responsive className="mt-4 mb-5">
 						<thead>
