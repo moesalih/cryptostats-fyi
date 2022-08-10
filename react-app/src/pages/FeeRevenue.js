@@ -100,12 +100,12 @@ export default function () {
 			{protocols && protocols.length > 0 &&
 				<>
 					<div className='text-end mt-4'>
-						<ButtonGroup className='me-2'>
+						<ButtonGroup className='ms-2 mb-2'>
 							<Helpers.FilterToolbarButton title='Chain' listFunc={getChains} filterItems={chainFilter} setFilterItemsFunc={setChainFilter} />
 							<Helpers.FilterToolbarButton title='Category' listFunc={getCategories} filterItems={categoryFilter} setFilterItemsFunc={setCategoryFilter} itemDisplayFunc={item => item.toUpperCase()} />
 						</ButtonGroup>
-						<Helpers.BoolToolbarButton selected={bundled} onChange={setBundled} title='Bundle' className='me-2' />
-						<Helpers.DateToolbarButton selected={date} onChange={dateChanged} />
+						<Helpers.BoolToolbarButton selected={bundled} onChange={setBundled} title='Bundle' className='ms-2 mb-2' />
+						<Helpers.DateToolbarButton selected={date} onChange={dateChanged} className='ms-2 mb-2' />
 					</div>
 					<Table responsive className="my-4">
 						<thead>
