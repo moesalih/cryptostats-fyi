@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Navbar, Nav, NavDropdown, Dropdown, NavItem, NavLink, Spinner, Button, Popover, OverlayTrigger, Form, Table } from 'react-bootstrap';
+import DatePicker from 'react-datepicker';
 
 const axios = require('axios').default;
+const moment = require('moment')
 
 
 
@@ -26,6 +28,24 @@ Helpers.loadCryptoStats = async (collection, queries, args = [], metadata = true
 		return null
 	}
 }
+
+
+
+
+Helpers.Header = function (props) {
+	return <>
+		<div className="h2 fw-light">{props.title}</div>
+		<div className='opacity-50'>{props.subtitle}</div>
+	</>
+}
+
+Helpers.Loading = function (props) {
+	return <div className='text-center my-5 py-5 opacity-25'><Spinner animation="border" variant="black" /></div>
+}
+Helpers.Error = function (props) {
+	return <div className='text-center my-5 py-5 opacity-25 fw-500'><div><i className='bi bi-exclamation-circle-fill'></i></div><div>Error loading data</div></div>
+}
+
 
 
 Helpers.Icon = function (props) {
@@ -82,35 +102,30 @@ Helpers.filterOverlay = function (title, listFunc, filterItems, setFilterItemsFu
 	)
 }
 
-Helpers.filterIcon = function (title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc) {
-	return Helpers.filterOverlay(title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc, (
-		<i className={"bi bi-funnel-fill small ms-1 " + (filterItems.length > 0 ? 'text-primary' : 'opacity-25')}></i>
-	))
-}
-Helpers.filterButton = function (title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc) {
+Helpers.FilterToolbarButton = function ({ title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc }) {
 	let combinedFilterItems = filterItems.join(', ')
 	return Helpers.filterOverlay(title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc, (
-		<Button variant="light" className={(filterItems.length > 0 ? '' : 'text-muted')}>
-			<i className={"bi bi-funnel-fill small ms-1x " + (filterItems.length > 0 ? 'text-primary' : 'opacity-25')}></i> {filterItems.length == 0 ? title : itemDisplayFunc ? itemDisplayFunc(combinedFilterItems) : combinedFilterItems} 
+		<Button variant="light" size='sm' className={(filterItems.length > 0 ? '' : 'text-muted')}>
+			<i className={"bi bi-funnel-fill small ms-1x " + (filterItems.length > 0 ? 'text-primary' : 'opacity-25')}></i> {filterItems.length == 0 ? title : itemDisplayFunc ? itemDisplayFunc(combinedFilterItems) : combinedFilterItems}
 		</Button>
 	))
 }
 
-Helpers.Header = function (props) {
+Helpers.BoolToolbarButton = function (props) {
 	return (
-		<>
-			<div className="h2 fw-light">{props.title}</div>
-			<div className='opacity-50'>{props.subtitle}</div>
-		</>
+		<Button variant="light" size='sm' className={(props.className || '') + (props.selected ? ' ' : ' text-muted')} onClick={() => { props.onChange(!props.selected) }}>
+			<i className={"small bi  " + (props.selected ? 'bi-check-square-fill text-primary ' : 'bi-square opacity-25')}></i> {props.title}
+		</Button>
+	)
+}
+Helpers.DateToolbarButton = function (props) {
+	return (
+		<DatePicker maxDate={moment().subtract(1, 'days').toDate()} {...props} customInput={
+			<Button variant="light" size='sm'><i className='bi bi-calendar-event text-primary'></i> {moment(props.selected).format('YYYY-MM-DD')}</Button>
+		} />
 	)
 }
 
-Helpers.Loading = function (props) {
-	return <div className='text-center my-5 py-5 opacity-25'><Spinner animation="border" variant="black" /></div>
-}
-Helpers.Error = function (props) {
-	return <div className='text-center my-5 py-5 opacity-25 fw-500'><div><i className='bi bi-exclamation-circle-fill'></i></div><div>Error loading data</div></div>
-}
 
 
 const ExpandableRow = function (props) {
@@ -141,6 +156,16 @@ const ExpandableRow = function (props) {
 	)
 }
 Helpers.ExpandableRow = ExpandableRow
+
+Helpers.StandardExpandedContent = function ({ protocol }) {
+	return <>
+		{protocol.metadata.blockchain && <div className='small'><span className='opacity-50'>Chain:</span> {protocol.metadata.blockchain}</div>}
+		{protocol.metadata.category && <div className='small'><span className='opacity-50'>Category:</span> <span className='text-uppercase'>{protocol.metadata.category}</span></div>}
+		{protocol.metadata.source && <div className='small'><span className='opacity-50'>Data Source:</span> {protocol.metadata.source}</div>}
+		{protocol.metadata.website && <div className='small'><span className='opacity-50'>Website:</span> <a href={protocol.metadata.website} target='_blank' className=''>{protocol.metadata.website}</a></div>}
+	</>
+}
+
 
 
 export default Helpers;

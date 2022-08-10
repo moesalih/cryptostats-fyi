@@ -54,8 +54,7 @@ export default function () {
 						{getFilteredProtocols() && getFilteredProtocols().map((protocol, index) => {
 							const expandedContent = (
 								<>
-									{protocol.metadata.source && <div className='small'><span className='opacity-50'>Source:</span> {protocol.metadata.source}</div>}
-									{protocol.metadata.website && <div className='small'><span className='opacity-50'>Website:</span> <a href={protocol.metadata.website} target='_blank' className=''>{protocol.metadata.website}</a></div>}
+									<Helpers.StandardExpandedContent protocol={protocol} />
 								</>
 							)
 							return (
