@@ -13,7 +13,6 @@ const moment = require('moment')
 export default function () {
 
 	const [protocols, setProtocols] = useState([]);
-	const [expanded, setExpanded] = useState(null);
 
 	async function fetchData() {
 		let protocols = await Helpers.loadCryptoStats('l2-fees', ['feeTransferEth', 'feeSwap'])

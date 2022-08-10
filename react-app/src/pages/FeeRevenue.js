@@ -23,8 +23,7 @@ export default function () {
 	const [date, setDate] = useState(moment().subtract(1, 'days').toDate());
 
 	async function fetchData() {
-		const dateString = moment(date).format('YYYY-MM-DD')
-		let protocols = await Helpers.loadCryptoStats('fees', ['oneDayTotalFees'], [dateString])
+		let protocols = await Helpers.loadCryptoStats('fees', ['oneDayTotalFees'], [Helpers.date(date)])
 		if (protocols) {
 			protocols = protocols.filter(protocol => protocol.results.oneDayTotalFees !== null && protocol.results.oneDayTotalFees > 0);
 			protocols = protocols.sort((a, b) => b.results.oneDayTotalFees - a.results.oneDayTotalFees);
@@ -108,7 +107,7 @@ export default function () {
 						<Helpers.BoolToolbarButton selected={bundled} onChange={setBundled} title='Bundle' className='me-2' />
 						<Helpers.DateToolbarButton selected={date} onChange={dateChanged} />
 					</div>
-					<Table responsive className="mt-4 mb-5">
+					<Table responsive className="my-4">
 						<thead>
 							<tr className='fw-normal small'>
 								<th ></th>

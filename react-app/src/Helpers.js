@@ -72,6 +72,9 @@ Helpers.number = function (number, decimals = 0) {
 Helpers.percent = function (number) {
 	return (number * 100).toFixed(2) + '%'
 }
+Helpers.date = function (date) {
+	return moment(date).format('YYYY-MM-DD')
+}
 
 Helpers.filterOverlay = function (title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc, trigger) {
 	function resetFilterItems() { setFilterItemsFunc([]) }
@@ -121,7 +124,7 @@ Helpers.BoolToolbarButton = function (props) {
 Helpers.DateToolbarButton = function (props) {
 	return (
 		<DatePicker maxDate={moment().subtract(1, 'days').toDate()} {...props} customInput={
-			<Button variant="light" size='sm'><i className='bi bi-calendar-event text-primary'></i> {moment(props.selected).format('YYYY-MM-DD')}</Button>
+			<Button variant="light" size='sm'><i className='bi bi-calendar-event text-primary'></i> {Helpers.date(props.selected)}</Button>
 		} />
 	)
 }

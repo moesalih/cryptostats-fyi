@@ -13,10 +13,10 @@ const moment = require('moment')
 export default function () {
 
 	const [protocols, setProtocols] = useState([]);
+	const [date, setDate] = useState(moment().subtract(1, 'days').toDate());
 
 	async function fetchData() {
-		const dateString = moment().subtract(1, 'days').format('YYYY-MM-DD')
-		let protocols = await Helpers.loadCryptoStats('active-addresses', ['activeAddressesOneDay'], [dateString])
+		let protocols = await Helpers.loadCryptoStats('active-addresses', ['activeAddressesOneDay'], [Helpers.date(date)])
 		if (protocols) {
 			protocols = protocols.sort((a, b) => b.results.activeAddressesOneDay - a.results.activeAddressesOneDay);
 		}
@@ -32,7 +32,12 @@ export default function () {
 
 	useEffect(() => {
 		fetchData()
-	}, [])
+	}, [date])
+
+	let dateChanged = (date) => {
+		setDate(date)
+		setProtocols([])
+	}
 
 
 	return (
@@ -42,31 +47,37 @@ export default function () {
 			{protocols.length == 0 && <Helpers.Loading />}
 
 			{protocols && protocols.length > 0 &&
-				<Table responsive className=" my-5">
-					<thead>
-						<tr className='fw-normal small'>
-							<th ></th>
-							<th className="text-end opacity-50">Daily Active Addresses</th>
-							<th ></th>
-						</tr>
-					</thead>
-					<tbody>
-						{getFilteredProtocols() && getFilteredProtocols().map((protocol, index) => {
-							const expandedContent = (
-								<>
-									<Helpers.StandardExpandedContent protocol={protocol} />
-								</>
-							)
-							return (
-								<Helpers.ExpandableRow expandedContent={expandedContent} key={index}>
-									<td ><Helpers.ProtocolIconName protocol={protocol} /></td>
-									<td className="text-end"><span className="font-monospace">{Helpers.number(protocol.results.activeAddressesOneDay, 2)}</span></td>
-								</Helpers.ExpandableRow>
-							)
-						})}
+				<>
+					<div className='text-end mt-4'>
+						<Helpers.DateToolbarButton selected={date} onChange={dateChanged} />
+					</div>
+					<Table responsive className=" my-4">
+						<thead>
+							<tr className='fw-normal small'>
+								<th ></th>
+								<th className="text-end opacity-50">Daily Active Addresses</th>
+								<th ></th>
+							</tr>
+						</thead>
+						<tbody>
+							{getFilteredProtocols() && getFilteredProtocols().map((protocol, index) => {
+								const expandedContent = (
+									<>
+										<Helpers.StandardExpandedContent protocol={protocol} />
+									</>
+								)
+								return (
+									<Helpers.ExpandableRow expandedContent={expandedContent} key={index}>
+										<td ><Helpers.ProtocolIconName protocol={protocol} /></td>
+										<td className="text-end"><span className="font-monospace">{Helpers.number(protocol.results.activeAddressesOneDay, 2)}</span></td>
+									</Helpers.ExpandableRow>
+								)
+							})}
 
-					</tbody>
-				</Table>
+						</tbody>
+					</Table>
+
+				</>
 			}
 
 		</>
