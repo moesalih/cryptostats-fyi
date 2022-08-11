@@ -62,7 +62,7 @@ export default function () {
 							return (
 								<Helpers.ExpandableRow expandedContent={expandedContent} key={index}>
 									<td >
-										<Helpers.ProtocolIconName protocol={protocol} />
+										<Helpers.ProtocolIconName protocol={protocol} hideChainFlag />
 										{protocol.metadata.flags && protocol.metadata.flags.warning ? <i className='bi bi-exclamation-triangle opacity-50 ms-1' title={protocol.metadata.flags.warning}></i> : ''}
 										{protocol.metadata.flags && protocol.metadata.flags.throtle ? <i className='bi bi-speedometer2 opacity-50 ms-1' title={protocol.metadata.flags.throtle}></i> : ''}
 									</td>

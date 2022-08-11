@@ -32,8 +32,8 @@ export default function () {
 		setProtocols(protocols)
 	}
 
-	let getIconForNetwork = function (network) {
-		let protocol = protocols.find(protocol => protocol.metadata.name === network)
+	let chainIcon = function (chain) {
+		let protocol = protocols.find(protocol => protocol.metadata.name === chain)
 		return protocol ? protocol.metadata.icon : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
 	}
 	let getCategories = function () { return protocols.map(protocol => protocol.metadata.category).filter(Helpers.unique) }
@@ -120,9 +120,8 @@ export default function () {
 							{getFilteredProtocols() && getFilteredProtocols().map((protocol) => {
 								const protocolCells = protocol => <>
 									<td ><Helpers.ProtocolIconName protocol={protocol} /></td>
-									<td className="d-none d-md-table-cell text-end" >{(protocol.metadata.blockchain ? [protocol.metadata.blockchain] : protocol.protocols.map(protocol => protocol.metadata.blockchain).filter(Helpers.unique)).map(blockchain =>
-										<Helpers.Icon src={getIconForNetwork(blockchain)} title={blockchain} className="smaller ms-1" key={blockchain} />
-									)}
+									<td className="d-none d-md-table-cell text-end" >
+										{Helpers.protocolChains(protocol).map(chain => <Helpers.Icon src={chainIcon(chain)} title={chain} className="smaller ms-1" key={chain} />)}
 									</td>
 									<td className="text-end"><span className="font-monospace">{Helpers.currency(protocol.results.oneDayTotalFees)}</span></td>
 								</>

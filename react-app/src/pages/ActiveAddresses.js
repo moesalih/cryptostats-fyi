@@ -68,7 +68,7 @@ export default function () {
 								)
 								return (
 									<Helpers.ExpandableRow expandedContent={expandedContent} key={index}>
-										<td ><Helpers.ProtocolIconName protocol={protocol} /></td>
+										<td ><Helpers.ProtocolIconName protocol={protocol} hideChainFlag /></td>
 										<td className="text-end"><span className="font-monospace">{Helpers.number(protocol.results.activeAddressesOneDay, 2)}</span></td>
 									</Helpers.ExpandableRow>
 								)

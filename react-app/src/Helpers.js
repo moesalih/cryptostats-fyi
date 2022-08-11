@@ -29,6 +29,13 @@ Helpers.loadCryptoStats = async (collection, queries, args = [], metadata = true
 	}
 }
 
+Helpers.protocolChains = (protocol) => {
+	return (protocol.metadata.blockchain ? [protocol.metadata.blockchain] : (protocol.protocols || []).map(protocol => protocol.metadata.blockchain).filter(Helpers.unique))
+}
+Helpers.isChain = (protocol) => {
+	return ['l1', 'l2'].includes((protocol.metadata.category || '').toLowerCase())
+}
+
 
 
 
@@ -59,6 +66,7 @@ Helpers.ProtocolIconName = function (props) {
 			<Helpers.Icon src={props.protocol.metadata.icon} className='me-3' />
 			<span className='fw-500 me-1 '>{props.protocol.metadata.name}</span>
 			{props.protocol.metadata.subtitle && <span className='opacity-50 me-2 small'>{props.protocol.metadata.subtitle}</span>}
+			{!props.hideChainFlag && Helpers.isChain(props.protocol) && <i className='bi bi-link-45deg opacity-50' title='Chain'></i>}
 		</span>
 	)
 }
@@ -109,7 +117,8 @@ Helpers.FilterToolbarButton = function ({ title, listFunc, filterItems, setFilte
 	let combinedFilterItems = filterItems.join(', ')
 	return Helpers.filterOverlay(title, listFunc, filterItems, setFilterItemsFunc, itemDisplayFunc, (
 		<Button variant="light" size='sm' className={(filterItems.length > 0 ? '' : 'text-muted')}>
-			<span className='text-nowrap'><i className={"bi bi-funnel-fill small ms-1x " + (filterItems.length > 0 ? 'text-primary' : 'opacity-25')}></i> {title}</span>{filterItems.length > 0 ? (': ' + itemDisplayFunc(combinedFilterItems)) : ''}
+			<span className='text-nowrap'><i className={"bi bi-funnel-fill small ms-1x " + (filterItems.length > 0 ? 'text-primary' : 'opacity-25')}></i> {title}</span>
+			<span className='fw-500'>{filterItems.length > 0 && (': ' + itemDisplayFunc(combinedFilterItems))}</span>
 		</Button>
 	))
 }
@@ -162,7 +171,7 @@ Helpers.ExpandableRow = ExpandableRow
 
 Helpers.StandardExpandedContent = function ({ protocol }) {
 	return <>
-		{protocol.metadata.blockchain && <div className='small'><span className='opacity-50'>Chain:</span> {protocol.metadata.blockchain}</div>}
+		{Helpers.protocolChains(protocol).length > 0 && <div className='small'><span className='opacity-50'>Chain:</span> {Helpers.protocolChains(protocol).join(', ')}</div>}
 		{protocol.metadata.category && <div className='small'><span className='opacity-50'>Category:</span> <span className='text-uppercase'>{protocol.metadata.category}</span></div>}
 		{protocol.metadata.source && <div className='small'><span className='opacity-50'>Data Source:</span> {protocol.metadata.source}</div>}
 		{protocol.metadata.website && <div className='small'><span className='opacity-50'>Website:</span> <a href={protocol.metadata.website} target='_blank' className=''>{protocol.metadata.website}</a></div>}
