@@ -23,12 +23,19 @@ export default function () {
 	const [date, setDate] = useState(moment().subtract(1, 'days').toDate());
 
 	async function fetchData() {
-		let protocols = await Helpers.loadCryptoStats('fees', ['oneDayTotalFees'], [Helpers.date(date)])
+		// let protocols = await Helpers.loadCryptoStats('fees', ['oneDayTotalFees'], [Helpers.date(date)])
+		let protocols = await Helpers.loadCryptoStatsAggregatedDates('fees', 'oneDayTotalFees', 7, Helpers.date(date))
 		if (protocols) {
+			protocols = protocols.map(p => {
+				let values = p.results['oneDayTotalFees_7days'].filter(v => v !== null)
+				p.results['oneDayTotalFees_7days_avg'] = values.reduce((a, b) => a + b, 0) / values.length
+				return p
+			})
 			protocols = protocols.filter(protocol => protocol.results.oneDayTotalFees !== null && protocol.results.oneDayTotalFees > 0);
 			protocols = protocols.sort((a, b) => b.results.oneDayTotalFees - a.results.oneDayTotalFees);
 			protocols.forEach(protocol => protocol.metadata.blockchain = protocol.metadata.blockchain || 'Other');
 		}
+		console.log(protocols)
 		setProtocols(protocols)
 	}
 
@@ -39,42 +46,12 @@ export default function () {
 	let getCategories = function () { return protocols.map(protocol => protocol.metadata.category).filter(Helpers.unique) }
 	let getChains = function () { return protocols.map(protocol => protocol.metadata.blockchain).filter(Helpers.unique) }
 
-	let getBundledProtocols = function (protocols) {
-		let bundles = []
-		protocols.forEach(protocol => {
-			protocol.bundle = (protocol.bundle || protocol.id)
-			let bundle = bundles.find(bundle => bundle.id === protocol.bundle)
-			if (bundle) {
-				bundle.protocols.push(protocol)
-				bundle.results.oneDayTotalFees += protocol.results.oneDayTotalFees
-			} else {
-				let bundle = {
-					id: protocol.bundle,
-					protocols: [],
-					metadata: {
-						name: protocol.metadata.name,
-						icon: protocol.metadata.icon,
-						website: protocol.metadata.website,
-						category: protocol.metadata.category,
-						source: protocol.metadata.source,
-						feeDescription: protocol.metadata.feeDescription,
-					},
-					results: { oneDayTotalFees: 0 }
-				}
-				bundle.protocols.push(protocol)
-				bundle.results.oneDayTotalFees += protocol.results.oneDayTotalFees
-				bundles.push(bundle)
-			}
-		})
-		// console.log(bundles);
-		return bundles
-	}
 
 	let getFilteredProtocols = function () {
 		let items = protocols
 		if (categoryFilter.length > 0) items = items.filter(protocol => categoryFilter.includes(protocol.metadata.category))
 		if (chainFilter.length > 0) items = items.filter(protocol => chainFilter.includes(protocol.metadata.blockchain))
-		if (bundled) items = getBundledProtocols(items)
+		if (bundled) items = Helpers.getBundledProtocols(items, ['oneDayTotalFees', 'oneDayTotalFees_7days_avg'])
 		items = items.sort((a, b) => b.results.oneDayTotalFees - a.results.oneDayTotalFees);
 		return items
 	}
@@ -113,6 +90,7 @@ export default function () {
 								<th ></th>
 								<th className="text-end opacity-50 d-none d-md-table-cell">Chain</th>
 								<th className="text-end opacity-50">1 Day Fees</th>
+								<th className="text-end opacity-50">7 Day Avg Fees</th>
 								<th ></th>
 							</tr>
 						</thead>
@@ -124,6 +102,7 @@ export default function () {
 										{Helpers.protocolChains(protocol).map(chain => <Helpers.Icon src={chainIcon(chain)} title={chain} className="smaller ms-1" key={chain} />)}
 									</td>
 									<td className="text-end"><span className="font-monospace">{Helpers.currency(protocol.results.oneDayTotalFees)}</span></td>
+									<td className="text-end"><span className="font-monospace">{Helpers.currency(protocol.results.oneDayTotalFees_7days_avg)}</span></td>
 								</>
 								const expandedRows = <>
 									{(bundled && protocol.protocols.length > 1 ? protocol.protocols : []).map((protocol) =>

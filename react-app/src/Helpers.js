@@ -28,12 +28,73 @@ Helpers.loadCryptoStats = async (collection, queries, args = [], metadata = true
 		return null
 	}
 }
+Helpers.loadCryptoStatsAggregatedDates = async (collection, query, numDays = 1, date = Helpers.date(moment().subtract(1, 'days'))) => {
+	try {
+		let dates = new Array(numDays).fill(0).map((_, i) => moment(date).subtract(numDays - i - 1, 'days').format('YYYY-MM-DD'))
+		let queryFunc = async (d) => { return await Helpers.loadCryptoStats(collection, [query], [d], d == date) }
+		let queryFuncWithRetry = async (d) => {
+			let result = await queryFunc(d)
+			if (result == null) result = await queryFunc(d)
+			return result
+		}
+		let results = await Promise.all(dates.map(queryFuncWithRetry))
+		console.log('raw data', dates, results)
+
+		let result = results[results.length - 1]
+		result.forEach(protocol => {
+			let values = results.map(res => {
+				if (!res) return null
+				let p = res.find(p => p.id === protocol.id)
+				if (p) return p.results[query]
+				else return null
+			})
+			protocol.results[query + '_' + numDays + 'days'] = values
+		})
+		return result
+
+	} catch (error) {
+		console.log(error)
+		return null
+	}
+}
 
 Helpers.protocolChains = (protocol) => {
 	return (protocol.metadata.blockchain ? [protocol.metadata.blockchain] : (protocol.protocols || []).map(protocol => protocol.metadata.blockchain).filter(Helpers.unique))
 }
 Helpers.isChain = (protocol) => {
 	return ['l1', 'l2'].includes((protocol.metadata.category || '').toLowerCase())
+}
+
+Helpers.getBundledProtocols = function (protocols, attributesToBundle) {
+	let bundles = []
+	protocols.forEach(protocol => {
+		protocol.bundle = (protocol.bundle || protocol.id)
+		let bundle = bundles.find(bundle => bundle.id === protocol.bundle)
+		if (bundle) {
+			bundle.protocols.push(protocol)
+			attributesToBundle.forEach(attribute => bundle.results[attribute] += protocol.results[attribute])
+		} else {
+			let bundle = {
+				id: protocol.bundle,
+				protocols: [],
+				metadata: {
+					name: protocol.metadata.name,
+					icon: protocol.metadata.icon,
+					website: protocol.metadata.website,
+					category: protocol.metadata.category,
+					source: protocol.metadata.source,
+					feeDescription: protocol.metadata.feeDescription,
+				},
+				results: {},
+			}
+			attributesToBundle.forEach(attribute => bundle.results[attribute] = 0)
+			bundle.protocols.push(protocol)
+			attributesToBundle.forEach(attribute => bundle.results[attribute] += protocol.results[attribute])
+			bundles.push(bundle)
+		}
+	})
+	// console.log(bundles);
+	return bundles
 }
 
 
