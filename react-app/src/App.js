@@ -4,6 +4,7 @@ import './App.css';
 import "react-datepicker/dist/react-datepicker.css";
 
 import FeeRevenue from './pages/FeeRevenue';
+import TotalValueLocked from './pages/TotalValueLocked';
 import Issuance from './pages/Issuance';
 import TransactionFees from './pages/TransactionFees';
 import DAOTreasuries from './pages/DAOTreasuries';
@@ -16,6 +17,7 @@ function App() {
 
 	let routes = [
 		{ path: '/fee-revenue', component: FeeRevenue, title: '💰  Fee Revenue' },
+		{ path: '/tvl', component: TotalValueLocked, title: '🗄  Total Value Locked', hidden: true },
 		{ path: '/issuance', component: Issuance, title: '🖨  Issuance' },
 		{ path: '/transaction-fees', component: TransactionFees, title: '💳  Transaction Fees' },
 		{ path: '/dao-treasuries', component: DAOTreasuries, title: '🏛  DAO Treasuries' },
@@ -35,7 +37,7 @@ function App() {
 						<Navbar.Toggle className="d-lg-none border-0" />
 						<Navbar.Collapse id="basic-navbar-nav " className="d-lg-block min-vh-100x">
 							<Nav className="me-auto py-3 py-lg-5 fw-500">
-								{routes.map(route => <NavLink className="nav-link" style={{whiteSpace: 'pre'}} to={route.path} key={route.path}>{route.title}</NavLink>)}
+								{routes.filter(r => !r.hidden).map(route => <NavLink className="nav-link" style={{whiteSpace: 'pre'}} to={route.path} key={route.path}>{route.title}</NavLink>)}
 							</Nav>
 							<div className="opacity-50 smaller lh-lg">
 								<div>Data from <a href="https://cryptostats.community" target="_blank" className="text-reset fw-600 text-decoration-none">CryptoStats</a></div>
