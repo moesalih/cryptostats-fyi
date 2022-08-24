@@ -138,8 +138,8 @@ Helpers.currency = function (number, decimals = 0) {
 Helpers.number = function (number, decimals = 0) {
 	return new Intl.NumberFormat('en-US', { style: 'decimal', maximumFractionDigits: decimals }).format(number)
 }
-Helpers.percent = function (number) {
-	return (number * 100).toFixed(2) + '%'
+Helpers.percent = function (number, decimals = 2) {
+	return (number * 100).toFixed(decimals) + '%'
 }
 Helpers.date = function (date) {
 	return moment(date).format('YYYY-MM-DD')

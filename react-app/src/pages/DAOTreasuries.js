@@ -15,9 +15,17 @@ export default function () {
 	const [protocols, setProtocols] = useState([]);
 
 	async function fetchData() {
-		let protocols = await Helpers.loadCryptoStats('treasuries', ['currentTreasuryUSD', 'currentLiquidTreasuryUSD'])
+		let protocols = await Helpers.loadCryptoStats('treasuries', ['currentTreasuryUSD', 'currentLiquidTreasuryUSD', 'currentTreasuryPortfolio'])
 		if (protocols) {
 			protocols = protocols.sort((a, b) => b.results.currentTreasuryUSD - a.results.currentTreasuryUSD)
+			protocols.forEach(protocol => {
+				if (protocol.results.currentTreasuryPortfolio) {
+					protocol.results.currentTreasuryPortfolio = protocol.results.currentTreasuryPortfolio.sort((a, b) => b.value - a.value)
+					protocol.results.currentTreasuryPortfolio = protocol.results.currentTreasuryPortfolio.filter(asset => asset.value > 1)
+
+				}
+			});
+
 		}
 		setProtocols(protocols)
 	}
@@ -52,13 +60,23 @@ export default function () {
 					</thead>
 					<tbody>
 						{getFilteredProtocols() && getFilteredProtocols().map((protocol, index) => {
+							const expandedRows = <>
+								{protocol.results.currentTreasuryPortfolio && protocol.results.currentTreasuryPortfolio.filter(asset => asset.value > protocol.results.currentTreasuryUSD * 0.01).map((asset, i) =>
+									<tr className={'border-light bg-light small ' + (asset.vesting ? 'text-muted' : '')} key={i}>
+										<td className=''><Helpers.Icon src={asset.icon} className='me-3' />{asset.name} <span className='opacity-50 small'>{asset.symbol}</span> × {Helpers.number(asset.amount, 2)} {asset.vesting && <span className='text-uppercase rounded-pill badge bg-secondary opacity-50 ms-2'>Unvested</span>}</td>
+										<td className="text-end"><span className="font-monospace">{Helpers.currency(asset.value)}</span></td>
+										<td className="opacity-50">({Helpers.percent(asset.value / protocol.results.currentTreasuryUSD, 1)})</td>
+										<td></td>
+									</tr>
+								)}
+							</>
 							const expandedContent = (
 								<>
 									<Helpers.StandardExpandedContent protocol={protocol} />
 								</>
 							)
 							return (
-								<Helpers.ExpandableRow expandedContent={expandedContent} key={index}>
+								<Helpers.ExpandableRow expandedContent={expandedContent} expandedRows={expandedRows} key={index}>
 									<td ><Helpers.ProtocolIconName protocol={protocol} /></td>
 									<td className="text-end"><span className="font-monospace">{Helpers.currency(protocol.results.currentTreasuryUSD, 0)}</span></td>
 									<td className="text-end"><span className="font-monospace">{Helpers.currency(protocol.results.currentLiquidTreasuryUSD, 0)}</span></td>

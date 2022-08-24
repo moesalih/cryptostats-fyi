@@ -84,8 +84,8 @@ export default function () {
 					<tr className='fw-normal small'>
 						<th ></th>
 						<th className="text-end opacity-50 d-none d-md-table-cell">Chain</th>
-						<th className="text-end opacity-50">1 Day Fees</th>
-						<th className="text-end opacity-50">7 Day Avg Fees</th>
+						<th className="text-end opacity-50 text-nowrap">1 Day Fees</th>
+						<th className="text-end opacity-50 text-nowrap">7 Day Avg Fees</th>
 						<th ></th>
 					</tr>
 				</thead>
