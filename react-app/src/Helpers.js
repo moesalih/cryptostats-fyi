@@ -59,7 +59,7 @@ Helpers.loadCryptoStatsAggregatedDates = async (collection, query, numDays = 1, 
 }
 
 Helpers.protocolChains = (protocol) => {
-	return (protocol.metadata.blockchain ? [protocol.metadata.blockchain] : (protocol.protocols || []).map(protocol => protocol.metadata.blockchain).filter(Helpers.unique))
+	return (protocol.metadata.blockchain ? [protocol.metadata.blockchain] : (protocol.protocols || []).map(protocol => protocol.metadata.blockchain).filter(Helpers.unique).filter(c => !!c))
 }
 Helpers.isChain = (protocol) => {
 	return ['l1', 'l2'].includes((protocol.metadata.category || '').toLowerCase())
@@ -126,8 +126,8 @@ Helpers.ProtocolIconName = function (props) {
 		<span className='text-nowrap'>
 			<Helpers.Icon src={props.protocol.metadata.icon} className='me-3' />
 			<span className='fw-500 me-1 '>{props.protocol.metadata.name}</span>
-			{props.protocol.metadata.subtitle && <span className='opacity-50 me-2 small'>{props.protocol.metadata.subtitle}</span>}
-			{!props.hideChainFlag && Helpers.isChain(props.protocol) && <i className='bi bi-link-45deg opacity-50' title='Chain'></i>}
+			{!props.hideSubtitle && props.protocol.metadata.subtitle && <span className='opacity-50 me-2 small'>{props.protocol.metadata.subtitle}</span>}
+			{!props.hideChainFlag && Helpers.isChain(props.protocol) && <i className='bi bi-link-45deg' title='Chain'></i>}
 		</span>
 	)
 }
@@ -201,6 +201,7 @@ Helpers.DateToolbarButton = function (props) {
 
 
 
+
 const ExpandableRow = function (props) {
 	const [expanded, setExpanded] = useState(null);
 	return (
@@ -239,6 +240,42 @@ Helpers.StandardExpandedContent = function ({ protocol }) {
 	</>
 }
 
+Helpers.ProtocolsRows = function ({ protocols, protocolCellsFunc, expandedRowsFunc, expandedContentFunc }) {
+	return (<>
+		{protocols && protocols.map((protocol, index) => {
+			let expandedRows = (expandedRowsFunc && expandedRowsFunc(protocol)) || <>
+				{(protocol.protocols && protocol.protocols.length > 1 ? protocol.protocols : []).map((protocol) =>
+					<tr className='border-light bg-light small' key={protocol.id}>
+						{protocolCellsFunc(protocol)}
+						<td></td>
+					</tr>
+				)}
+			</>
+			let expandedContent = (expandedContentFunc && expandedContentFunc(protocol)) || <Helpers.StandardExpandedContent protocol={protocol} />
+			return (
+				<Helpers.ExpandableRow expandedContent={expandedContent} expandedRows={expandedRows} key={protocol.id}>
+					{protocolCellsFunc(protocol)}
+				</Helpers.ExpandableRow>
+			)
+		})}
+
+	</>)
+}
+Helpers.ProtocolsTable = function (props) {
+	return (<>
+		<Table responsive className=" my-4">
+			<thead>
+				<tr className='fw-normal small'>
+					{props.headerCells}
+					<th ></th>
+				</tr>
+			</thead>
+			<tbody>
+				<Helpers.ProtocolsRows {...props} />
+			</tbody>
+		</Table>
+	</>)
+}
 
 
 export default Helpers;
