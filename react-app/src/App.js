@@ -27,7 +27,7 @@ function App() {
 	]
 
 	return (
-		<div className="App container">
+		<div className="App container-fluid container-xxl">
 
 			<div className="row">
 				<div className="col-lg-3 xcol-xxl-2 px-lg-4 xbg-light ">
