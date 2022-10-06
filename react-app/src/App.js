@@ -11,6 +11,7 @@ import DAOTreasuries from './pages/DAOTreasuries';
 import BridgedValue from './pages/BridgedValue';
 import ActiveAddresses from './pages/ActiveAddresses';
 import TransactionCount from './pages/TransactionCount';
+import Settings from './pages/Settings';
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
 		{ path: '/bridged-value', component: BridgedValue, title: '⛩  Bridged Value', hidden: true },
 		{ path: '/active-addresses', component: ActiveAddresses, title: '👤  Active Addresses' },
 		{ path: '/transaction-count', component: TransactionCount, title: '🎟  Transaction Count' },
+		{ path: '/settings', component: Settings, hidden: true },
 	]
 
 	return (

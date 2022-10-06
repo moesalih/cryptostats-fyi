@@ -164,7 +164,7 @@ export default function () {
 				</DropdownButton> */}
 				{loadedDays < pastDays && <div className='d-inline-block opacity-25 ms-4 smaller'><Spinner animation="border" variant="black" size='sm' className='me-1 align-text-bottom' /> Loading more historical data...</div>}
 			</div>
-			<div class="ratio ratio-16x9">
+			<div className="ratio ratio-16x9">
 				<Bar options={options} data={data} />
 			</div>
 
