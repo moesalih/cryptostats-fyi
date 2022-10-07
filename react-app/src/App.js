@@ -22,7 +22,7 @@ function App() {
 		{ path: '/issuance', component: Issuance, title: '🖨  Issuance' },
 		{ path: '/transaction-fees', component: TransactionFees, title: '💳  Transaction Fees' },
 		{ path: '/dao-treasuries', component: DAOTreasuries, title: '🏛  DAO Treasuries' },
-		{ path: '/bridged-value', component: BridgedValue, title: '⛩  Bridged Value', hidden: true },
+		{ path: '/bridged-value', component: BridgedValue, title: '⛩  Bridged Value', hidden: false },
 		{ path: '/active-addresses', component: ActiveAddresses, title: '👤  Active Addresses' },
 		{ path: '/transaction-count', component: TransactionCount, title: '🎟  Transaction Count' },
 		{ path: '/settings', component: Settings, hidden: true },

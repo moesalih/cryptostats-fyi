@@ -42,16 +42,15 @@ export default function () {
 
 	return (
 		<>
-			<Helpers.Header title='Transaction Count' subtitle='Number of transactions include on a chain.' />
+			<Helpers.Header title='Transaction Count' subtitle='Number of transactions included on a chain.'>
+				<Helpers.DateToolbarButton selected={date} onChange={dateChanged} />
+			</Helpers.Header>
 
 			{protocols.length == 0 && <Helpers.Loading />}
 
 			{protocols && protocols.length > 0 &&
 				<>
-					<div className='text-end mt-4'>
-						<Helpers.DateToolbarButton selected={date} onChange={dateChanged} />
-					</div>
-					<Table responsive className=" my-4">
+					<Table responsive className=" ">
 						<thead>
 							<tr className='fw-normal small'>
 								<th ></th>

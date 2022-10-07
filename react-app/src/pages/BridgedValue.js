@@ -80,14 +80,15 @@ export default function () {
 
 	return (
 		<>
-			<Helpers.Header title='Bridged Value' subtitle='Value locked on various bridges between chains.' />
+			<Helpers.Header title='Bridged Value' subtitle='Value locked on various bridges between chains.'>
+				{protocols && protocols.length > 0 && <>
+					<Helpers.BoolToolbarButton selected={bundled} onChange={setBundled} title='Bundle' className='ms-2 mb-2' />
+				</>}
+			</Helpers.Header>
 
 			{protocols.length == 0 && <Helpers.Loading />}
 
 			{protocols && protocols.length > 0 && <>
-				<div className='text-end mt-4'>
-					<Helpers.BoolToolbarButton selected={bundled} onChange={setBundled} title='Bundle' className='ms-2 mb-2' />
-				</div>
 				<Helpers.ProtocolsTable {...{ headerCells, protocolCellsFunc, protocols: getFilteredProtocols() }} />
 			</>}
 

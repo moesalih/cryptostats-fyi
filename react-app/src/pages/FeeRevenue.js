@@ -132,10 +132,6 @@ export default function () {
 				legend: {
 					display: false,
 				},
-				// title: {
-				// 	display: true,
-				// 	text: 'Chart.js Bar Chart',
-				// },
 			},
 		}
 
@@ -149,7 +145,7 @@ export default function () {
 		}
 
 		return <>
-			<div className=' my-4'>
+			<div className='mb-4'>
 				<Dropdown className='d-inline-block'>
 					<Dropdown.Toggle variant="light" size='smx' id="protocol">
 						<Helpers.ProtocolIconName protocol={selectedProtocols[0]} imgClass='me-2' /> &nbsp;
@@ -164,7 +160,7 @@ export default function () {
 				</DropdownButton> */}
 				{loadedDays < pastDays && <div className='d-inline-block opacity-25 ms-4 smaller'><Spinner animation="border" variant="black" size='sm' className='me-1 align-text-bottom' /> Loading more historical data...</div>}
 			</div>
-			<div className="ratio ratio-16x9">
+			<div className="ratio ratio-1x1">
 				<Bar options={options} data={data} />
 			</div>
 
@@ -173,40 +169,27 @@ export default function () {
 
 	return (
 		<>
-			<div className='row'>
-				<div className='col-md-5'>
-					<Helpers.Header title='Fee Revenue' subtitle='Total fees paid to a protocol in a day.' />
-
-				</div>
-				<div className='col-md-7'>
-					{protocols && protocols.length > 0 &&
-						<>
-							<div className='text-end '>
-								<Helpers.FilterToolbarButton title='Chain' listFunc={getChains} filterItems={chainFilter} setFilterItemsFunc={setChainFilter} className='ms-2 mb-2' />
-								<Helpers.FilterToolbarButton title='Category' listFunc={getCategories} filterItems={categoryFilter} setFilterItemsFunc={setCategoryFilter} itemDisplayFunc={item => item.toUpperCase()} className='ms-2 mb-2' />
-								<Helpers.BoolToolbarButton selected={bundled} onChange={setBundled} title='Bundle' className='ms-2 mb-2' />
-								<Helpers.DateToolbarButton selected={date} onChange={dateChanged} className='ms-2 mb-2' />
-								<ToggleButtonGroup type="radio" name='view' value={view} className='ms-2 mb-2'>
-									<ToggleButton variant='light' size='sm' value='xlist' className={view == 'list' ? 'text-primary' : 'text-muted'} onClick={() => setView('list')}><i className='bi bi-list-columns' title='List'></i></ToggleButton>
-									<ToggleButton variant='light' size='sm' value='xchart' className={view == 'chart' ? 'text-primary' : 'text-muted'} onClick={() => setView('chart')}><i className='bi bi-bar-chart-line-fill' title='Chart'></i></ToggleButton>
-								</ToggleButtonGroup>
-							</div>
-						</>
-					}
-
-				</div>
-			</div>
+			<Helpers.Header title='Fee Revenue' subtitle='Total fees paid to a protocol in a day.' >
+				{protocols && protocols.length > 0 && <>
+					<Helpers.FilterToolbarButton title='Chain' listFunc={getChains} filterItems={chainFilter} setFilterItemsFunc={setChainFilter} className='ms-2 mb-2' />
+					<Helpers.FilterToolbarButton title='Category' listFunc={getCategories} filterItems={categoryFilter} setFilterItemsFunc={setCategoryFilter} itemDisplayFunc={item => item.toUpperCase()} className='ms-2 mb-2' />
+					<Helpers.BoolToolbarButton selected={bundled} onChange={setBundled} title='Bundle' className='ms-2 mb-2' />
+					<Helpers.DateToolbarButton selected={date} onChange={dateChanged} className='ms-2 mb-2' />
+					<ToggleButtonGroup type="radio" name='view' value={view} className='ms-2 mb-2'>
+						<ToggleButton variant='light' size='sm' value='xlist' className={view == 'list' ? 'text-primary' : 'text-muted'} onClick={() => setView('list')}><i className='bi bi-list-columns' title='List'></i></ToggleButton>
+						<ToggleButton variant='light' size='sm' value='xchart' className={view == 'chart' ? 'text-primary' : 'text-muted'} onClick={() => setView('chart')}><i className='bi bi-bar-chart-line-fill' title='Chart'></i></ToggleButton>
+					</ToggleButtonGroup>
+				</>}
+			</Helpers.Header>
 
 
 			{protocols && protocols.length == 0 && <Helpers.Loading />}
 			{!protocols && <Helpers.Error />}
 
-			{protocols && protocols.length > 0 &&
-				<>
-					{view == 'list' && <ListView />}
-					{view == 'chart' && <ChartView />}
-				</>
-			}
+			{protocols && protocols.length > 0 && <>
+				{view == 'list' && <ListView />}
+				{view == 'chart' && <ChartView />}
+			</>}
 
 		</>
 	);

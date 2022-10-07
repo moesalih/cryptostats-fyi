@@ -41,7 +41,7 @@ export default function() {
 			{protocols.length == 0 && <Helpers.Loading />}
 
 			{protocols && protocols.length > 0 &&
-				<Table responsive className=" my-5">
+				<Table responsive className="">
 					<thead>
 						<tr className='fw-normal small'>
 							<th ></th>

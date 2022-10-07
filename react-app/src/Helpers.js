@@ -38,7 +38,7 @@ Helpers.loadCryptoStatsCache = async (collection, queries, args = [], metadata =
 		let response = await cache.match(url)
 		if (response) {
 			let result = await response.json()
-			let cacheDuration = metadata ? 1000 * 60 * 1 : 1000 * 60 * 60
+			let cacheDuration = metadata ? 1000 * 60 * 5 : 1000 * 60 * 60
 			if (result._cachedAt > new Date().getTime() - cacheDuration) {
 				console.log('🪣 CryptoStats', collection, queries, args, metadata, result)
 				return result.protocols
@@ -128,8 +128,13 @@ Helpers.getBundledProtocols = function (protocols, attributesToBundle = [], arra
 
 Helpers.Header = function (props) {
 	return <>
-		<div className="h2 fw-light">{props.title}</div>
-		<div className='small opacity-50'>{props.subtitle}</div>
+		<div className='row'>
+			<div className='col-md mb-4'>
+				<div className="h2 fw-light">{props.title}</div>
+				<div className='small opacity-50'>{props.subtitle}</div>
+			</div>
+			{props.children && <div className='col-md-auto mb-4 text-end'>{props.children}</div>}
+		</div>
 	</>
 }
 
@@ -289,7 +294,7 @@ Helpers.ProtocolsRows = function ({ protocols, protocolCellsFunc, expandedRowsFu
 }
 Helpers.ProtocolsTable = function (props) {
 	return (<>
-		<Table responsive className=" my-4">
+		<Table responsive className=" ">
 			<thead>
 				<tr className='fw-normal small'>
 					{props.headerCells}

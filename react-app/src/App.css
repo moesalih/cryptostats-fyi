@@ -8,3 +8,10 @@ thead th {
 .react-datepicker-wrapper {
 	width: auto !important;
 }
+
+@media (min-width: 576px) {
+	.ratio-1x1 {
+		--bs-aspect-ratio: 60% !important;
+	}
+}
+ 
